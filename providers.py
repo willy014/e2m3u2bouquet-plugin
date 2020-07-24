@@ -1,6 +1,8 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import os
-import log
-import e2m3u2bouquet
+from . import log
+from . import e2m3u2bouquet
 from enigma import eTimer
 from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
 			 ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, \
@@ -21,6 +23,10 @@ except ImportError:
     import xml.etree.ElementTree as ET
 from Tools.LoadPixmap import LoadPixmap
 from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
+
+import six
+
+
 try:
     from Tools.Directoires import SCOPE_ACTIVE_SKIN
 except:
@@ -135,7 +141,7 @@ class E2m3u2b_Providers(Screen):
     def refresh(self):
         self.drawList = []
 
-        for key, provider in self.e2m3u2b_config.providers.iteritems():
+        for key, provider in six.iteritems(self.e2m3u2b_config.providers):
             self.drawList.append(self.buildListEntry(provider))
         self['list'].setList(self.drawList)
 
@@ -265,7 +271,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
                 self.list.append(getConfigListEntry('Setup mode:', self.provider_settings_level, 'Choose level of settings. Expert shows all options'))
                 if not self.provider.provider_hide_urls:
                     self.list.append(getConfigListEntry('M3U url:', self.provider_m3u_url, 'Providers M3U url. USERNAME & PASSWORD will be replaced by values below'))
-                    self.list.append(getConfigListEntry('EPG url:', self.provider_epg_url,'Providers EPG url. USERNAME & PASSWORD will be replaced by values below'))
+                    self.list.append(getConfigListEntry('EPG url:', self.provider_epg_url, 'Providers EPG url. USERNAME & PASSWORD will be replaced by values below'))
                 self.list.append(getConfigListEntry('Username:', self.provider_username, 'If set will replace USERNAME placeholder in urls'))
                 self.list.append(getConfigListEntry('Password:', self.provider_password, 'If set will replace PASSWORD placeholder in urls'))
                 self.list.append(getConfigListEntry('Multi VOD:', self.provider_multi_vod, 'Enable to create multiple VOD bouquets rather than single VOD bouquet'))
@@ -327,7 +333,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         if self.provider_name.value != '' and self.provider_name.value != previous_name:
             # update provider dict key if name changed
             self.e2m3u2b_config.providers[self.provider_name.value] = self.e2m3u2b_config.providers.pop(previous_name)
-            print>> log, '[e2m3u2b] Provider {} updated'.format(self.provider_name.value)
+            print('[e2m3u2b] Provider {} updated'.format(self.provider_name.value), file=log)
 
         # save xml config
         self.e2m3u2b_config.write_config()
@@ -355,7 +361,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
     def delete_confirm(self, result):
         if not result:
             return
-        print>> log, '[e2m3u2b] Provider {} delete'.format(self.provider.name)
+        print('[e2m3u2b] Provider {} delete'.format(self.provider.name), file=log)
         self.e2m3u2b_config.providers.pop(self.provider.name, None)
         self.e2m3u2b_config.write_config()
         self.close()

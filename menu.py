@@ -1,13 +1,15 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import time
 import os
 import tempfile
 import sys
 import enigma
-import log
-import plugin as E2m3u2b_Plugin
+from . import log
+from . import plugin as E2m3u2b_Plugin
 
-from about import E2m3u2b_About
-from providers import E2m3u2b_Providers
+from .about import E2m3u2b_About
+from .providers import E2m3u2b_Providers
 
 from enigma import eTimer
 from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
@@ -33,7 +35,7 @@ except:
     pass
 from Tools.LoadPixmap import LoadPixmap
 
-import e2m3u2bouquet
+from . import e2m3u2bouquet
 
 try:
     import Plugins.Extensions.EPGImport.EPGImport as EPGImport
@@ -146,8 +148,8 @@ class E2m3u2b_Menu(Screen):
             return
         try:
             E2m3u2b_Plugin.do_reset()
-        except Exception, e:
-            print>> log, "[e2m3u2b] reset_bouquets_callback Error:", e
+        except Exception as e:
+            print("[e2m3u2b] reset_bouquets_callback Error:", e, file=log)
             if config.plugins.e2m3u2b.debug.value:
                 raise
 
@@ -420,8 +422,8 @@ class E2m3u2b_Update(Screen):
             return
         try:
             self.start_update()
-        except Exception, e:
-            print>> log, "[e2m3u2b] manual_update_callback Error:", e
+        except Exception as e:
+            print("[e2m3u2b] manual_update_callback Error:", e, file=log)
             if config.plugins.e2m3u2b.debug.value:
                 raise
 

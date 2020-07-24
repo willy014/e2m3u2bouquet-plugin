@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # encoding: utf-8
 
 """
@@ -9,6 +9,7 @@ e2m3u2bouquet.e2m3u2bouquet -- Enigma2 IPTV m3u to bouquet parser
 @license:    GNU GENERAL PUBLIC LICENSE version 3
 @deffield    updated: Updated
 """
+from __future__ import print_function
 import time
 import sys
 import os
@@ -16,8 +17,6 @@ import errno
 import re
 import unicodedata
 import datetime
-import urllib
-import urlparse
 import imghdr
 import tempfile
 import glob
@@ -36,7 +35,15 @@ except ImportError:
     eDVBDB = None
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
+from six.moves import range
+from six.moves import urllib
 from xml.sax.saxutils import escape
+
+import six
+from six.moves import urllib
+from six.moves.urllib.request import FancyURLopener, urlretrieve, urlopen
+from six.moves.urllib.parse import urlparse, quote, parse_qs, quote_plus
+
 
 __all__ = []
 __version__ = '0.8.5'
@@ -67,7 +74,7 @@ class CLIError(Exception):
         return self.msg
 
 
-class AppUrlOpener(urllib.FancyURLopener):
+class AppUrlOpener(FancyURLopener):
     """Set user agent for downloads
     """
     version = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
@@ -95,7 +102,7 @@ def make_config_folder():
     """
     try:
         os.makedirs(CFGPATH)
-    except OSError, e:  # race condition guard
+    except OSError as e:  # race condition guard
         if e.errno != errno.EEXIST:
             raise
 
@@ -128,7 +135,7 @@ def uninstaller():
                 tvfile.write(line)
         bakfile.close()
         tvfile.close()
-    except Exception, e:
+    except Exception as e:
         print('Unable to uninstall')
         raise
     print('----Uninstall complete----')
@@ -164,16 +171,16 @@ def xml_escape(string):
 
 def xml_safe_comment(string):
     """Can't have -- in xml comments"""
-    return string.replace('--', '- - ')
+    return '--'.replace('- - ')
 
 
 def get_safe_filename(filename, fallback=''):
     """Convert filename to safe filename
     """
     name = filename.replace(" ", "_").replace("/", "_")
-    if type(name) is unicode:
+    if isinstance(name, six.text_type):
         name = name.encode('utf-8')
-    name = unicodedata.normalize('NFKD', unicode(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
+    name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
     name = re.sub('[^a-z0-9-_]', '', name.lower())
     if not name:
         name = fallback
@@ -287,19 +294,19 @@ class Provider:
                         sys.stdout.write('.')
                         sys.stdout.flush()
                 try:
-                    response = urllib.urlopen(logo_url)
+                    response = urlopen(logo_url)
                     info = response.info()
                     response.close()
                     if info.maintype == 'image':
-                        urllib.urlretrieve(logo_url, picon_file_path)
+                        urlretrieve(logo_url, picon_file_path)
                     else:
                         if DEBUG:
                             print('Download Picon - not an image, skipping')
                         self._picon_create_empty(picon_file_path)
                         return
-                except Exception, e:
+                except Exception as e:
                     if DEBUG:
-                        print('Download picon urlopen error', e)
+                        print(('Download picon urlopen error', e))
                     self._picon_create_empty(picon_file_path)
                     return
                 self._picon_post_processing(picon_file_path)
@@ -318,36 +325,36 @@ class Provider:
         # get image type
         try:
             ext = imghdr.what(picon_file_path)
-        except Exception, e:
+        except Exception as e:
             if DEBUG:
-                print('Picon post processing - not an image or no file', e, picon_file_path)
+                print(('Picon post processing - not an image or no file', e, picon_file_path))
             self._picon_create_empty(picon_file_path)
             return
         # if image but not png convert to png
-        if (ext is not None) and (ext is not 'png'):
+        if (ext != None) and (ext != 'png'):
             if DEBUG:
                 print('Converting Picon to png')
             try:
                 Image.open(picon_file_path).save("{}.{}".format(picon_file_path, 'png'))
-            except Exception, e:
+            except Exception as e:
                 if DEBUG:
-                    print('Picon post processing - unable to convert image', e)
+                    print(('Picon post processing - unable to convert image', e))
                 self._picon_create_empty(picon_file_path)
                 return
             try:
                 # remove non png file
                 os.remove(picon_file_path)
-            except Exception, e:
+            except Exception as e:
                 if DEBUG:
-                    print('Picon post processing - unable to remove non png file', e)
+                    print(('Picon post processing - unable to remove non png file', e))
                 return
         else:
             # rename to correct extension
             try:
                 os.rename(picon_file_path, "{}.{}".format(picon_file_path, ext))
-            except Exception, e:
+            except Exception as e:
                 if DEBUG:
-                    print('Picon post processing - unable to rename file ', e)
+                    print(('Picon post processing - unable to rename file ', e))
 
     def _get_picon_name(self, channel):
         """Convert the service name to a Picon Service Name
@@ -355,9 +362,9 @@ class Provider:
         service_title = get_service_title(channel)
         name = service_title
 
-        if type(name) is unicode:
+        if isinstance(name, six.text_type):
             name = name.encode('utf-8')
-        name = unicodedata.normalize('NFKD', unicode(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
+        name = unicodedata.normalize('NFKD', six.text_type(name, 'utf_8', errors='ignore')).encode('ASCII', 'ignore')
         name = re.sub('[\W]', '', name.replace('&', 'and')
                       .replace('+', 'plus')
                       .replace('*', 'star')
@@ -393,7 +400,7 @@ class Provider:
     def _set_streamtypes_vodcats(self, service_dict):
         """Set the stream types and VOD categories
         """
-        parsed_stream_url = urlparse.urlparse(service_dict['stream-url'])
+        parsed_stream_url = urlparse(service_dict['stream-url'])
         root, ext = os.path.splitext(parsed_stream_url.path)
 
         # check for vod streams ending .*.m3u8 e.g. 2345.mp4.m3u8
@@ -426,10 +433,10 @@ class Provider:
                     dictoption = {}
 
                     category = node.attrib.get('name')
-                    if not type(category) is unicode:
+                    if not isinstance(category, six.text_type):
                         category = category.decode("utf-8")
                     cat_title_override = node.attrib.get('nameOverride', '')
-                    if not type(cat_title_override) is unicode:
+                    if not isinstance(cat_title_override, six.text_type):
                         cat_title_override = cat_title_override.decode("utf-8")
                     dictoption['nameOverride'] = cat_title_override
                     dictoption['enabled'] = node.attrib.get('enabled', True) == 'true'
@@ -446,7 +453,7 @@ class Provider:
 
                 self._update_status('custom bouquet order applied...')
                 print(Status.message)
-            except Exception, e:
+            except Exception as e:
                 msg = 'Corrupt override.xml file'
                 print(msg)
                 if DEBUG:
@@ -572,7 +579,7 @@ class Provider:
                                 break
                 self._update_status('custom overrides applied...')
                 print(Status.message)
-            except Exception, e:
+            except Exception as e:
                 msg = 'Corrupt override.xml file'
                 print(msg)
                 if DEBUG:
@@ -595,7 +602,7 @@ class Provider:
         """
         if not channel['stream-name'].startswith('placeholder_'):
             f.write("#SERVICE {}:{}:\n"
-                    .format(channel['serviceRef'], urllib.quote(channel['stream-url'])))
+                    .format(channel['serviceRef'], quote(channel['stream-url'])))
             f.write("#DESCRIPTION {}\n".format(get_service_title(channel).encode("utf-8")))
         else:
             f.write('{}\n'.format(PLACEHOLDER_SERVICE))
@@ -659,7 +666,7 @@ class Provider:
             f.write('#NAME {} - {}\n'.format(self.config.name.encode('utf-8'), bouquet_name.encode('utf-8')))
 
             # write place holder channels (for channel numbering)
-            for i in xrange(100):
+            for i in range(100):
                 f.write('{}\n'.format(PLACEHOLDER_SERVICE))
             channel_num = 1
 
@@ -678,7 +685,7 @@ class Provider:
                             self._save_bouquet_entry(f, x)
                         channel_num += 1
 
-                    while (channel_num % 100) is not 0:
+                    while (channel_num % 100) != 0:
                         f.write('{}\n'.format(PLACEHOLDER_SERVICE))
                         channel_num += 1
 
@@ -723,11 +730,11 @@ class Provider:
     def _extract_user_details_from_url(self):
         """Extract username & password from m3u_url """
         if self.config.m3u_url:
-            parsed = urlparse.urlparse(self.config.m3u_url)
-            username_param = urlparse.parse_qs(parsed.query).get('username')
+            parsed = urlparse(self.config.m3u_url)
+            username_param = parse_qs(parsed.query).get('username')
             if username_param:
                 self.config.username = username_param[0]
-            password_param = urlparse.parse_qs(parsed.query).get('password')
+            password_param = parse_qs(parsed.query).get('password')
             if password_param:
                 self.config.password = password_param[0]
 
@@ -743,20 +750,20 @@ class Provider:
         filename = os.path.join(path, 'provider-{}-update.txt'.format(self.config.name))
         self._update_status('----Downloading providers update file----')
         print('\n{}'.format(Status.message))
-        print('provider update url = ', self.config.provider_update_url)
+        print(('provider update url = ', self.config.provider_update_url))
         try:
             context = ssl._create_unverified_context()
-            urllib.urlretrieve(self.config.provider_update_url, filename, context=context)
+            urlretrieve(self.config.provider_update_url, filename, context=context)
             downloaded = True
         except Exception:
             pass  # fallback to no ssl context
 
         if not downloaded:
             try:
-                urllib.urlretrieve(self.config.provider_update_url, filename)
-            except Exception, e:
-                print('[e2m3u2b] process_provider_update error. Type:', type(e))
-                print('[e2m3u2b] process_provider_update error: ', e)
+                urlretrieve(self.config.provider_update_url, filename)
+            except Exception as e:
+                print(('[e2m3u2b] process_provider_update error. Type:', type(e)))
+                print(('[e2m3u2b] process_provider_update error: ', e))
 
         if os.path.isfile(filename):
             try:
@@ -775,7 +782,7 @@ class Provider:
                         self.config.epg_url = provider_tmp.get('epg', self.config.epg_url)
                         self.config.last_provider_update = int(time.time())
                         updated = True
-            except IndexError, e:
+            except IndexError as e:
                 print('[e2m3u2b] _process_provider_update error unable to read providers update file')
 
             if not DEBUG:
@@ -802,10 +809,10 @@ class Provider:
             self._extract_user_details_from_url()
 
         # Replace USERNAME & PASSWORD placeholders in urls
-        self.config.m3u_url = self.config.m3u_url.replace('USERNAME', urllib.quote_plus(self.config.username)).replace('PASSWORD', urllib.quote_plus(self.config.password))
-        self.config.epg_url = self.config.epg_url.replace('USERNAME', urllib.quote_plus(self.config.username)).replace('PASSWORD', urllib.quote_plus(self.config.password))
+        self.config.m3u_url = self.config.m3u_url.replace('USERNAME', quote_plus(self.config.username)).replace('PASSWORD', quote_plus(self.config.password))
+        self.config.epg_url = self.config.epg_url.replace('USERNAME', quote_plus(self.config.username)).replace('PASSWORD', quote_plus(self.config.password))
         if self.config.bouquet_download and self.config.bouquet_url:
-            self.config.bouquet_url = self.config.bouquet_url.replace('USERNAME', urllib.quote_plus(self.config.username)).replace('PASSWORD', urllib.quote_plus(self.config.password))
+            self.config.bouquet_url = self.config.bouquet_url.replace('USERNAME', quote_plus(self.config.username)).replace('PASSWORD', quote_plus(self.config.password))
 
         # get default provider bouquet download url if bouquet download set and no bouquet url given
         if self.config.bouquet_download and not self.config.bouquet_url:
@@ -813,7 +820,7 @@ class Provider:
             pos = self.config.m3u_url.find('get.php')
             if pos != -1:
                 self.config.bouquet_url = self.config.m3u_url[0:pos + 7] + '?username={}&password={}&type=dreambox&output=ts'.format(
-                    urllib.quote_plus(self.config.username), urllib.quote_plus(self.config.password))
+                    quote_plus(self.config.username), quote_plus(self.config.password))
 
         # Download panel bouquet
         if self.config.bouquet_url:
@@ -862,8 +869,8 @@ class Provider:
         if DEBUG:
             print("m3uurl = {}".format(self.config.m3u_url))
         try:
-            urllib.urlretrieve(self.config.m3u_url, filename)
-        except Exception, e:
+            urlretrieve(self.config.m3u_url, filename)
+        except Exception as e:
             self._update_status('Unable to download m3u file from url')
             print(Status.message)
             filename = None
@@ -887,7 +894,7 @@ class Provider:
                 print(msg)
                 if DEBUG:
                     raise Exception(msg)
-        except Exception, e:
+        except Exception as e:
             print(e)
             if DEBUG:
                 raise
@@ -928,7 +935,7 @@ class Provider:
                     channel[0] = channel[0][pos:]
 
                     # loop through params and build dict
-                    for i in xrange(0, len(channel) - 2, 2):
+                    for i in range(0, len(channel) - 2, 2):
                         service_dict[channel[i].lower().strip(' =')] = channel[i + 1].decode('utf-8')
 
                     # Get the stream name from end of line (after comma)
@@ -1027,7 +1034,7 @@ class Provider:
                     for line in self._dictchannels[cat]:
                         linevals = ""
                         for key, value in line.items():
-                            if type(value) is bool:
+                            if isinstance(value, bool):
                                 linevals += str(value) + ":"
                             else:
                                 linevals += value.encode("utf-8") + ":"
@@ -1047,8 +1054,8 @@ class Provider:
         if DEBUG:
             print("bouqueturl = {}".format(self.config.bouquet_url))
         try:
-            urllib.urlretrieve(self.config.bouquet_url, filename)
-        except Exception, e:
+            urlretrieve(self.config.bouquet_url, filename)
+        except Exception as e:
             msg = 'Unable to download providers panel bouquet file'
             print(msg)
             if DEBUG:
@@ -1062,7 +1069,7 @@ class Provider:
         print('If no Picons exist this will take a few minutes')
         try:
             os.makedirs(self.config.icon_path)
-        except OSError, e:  # race condition guard
+        except OSError as e:  # race condition guard
             if e.errno != errno.EEXIST:
                 raise
 
@@ -1090,7 +1097,7 @@ class Provider:
                     for url in group:
                         urllist.append(url.text)
                     self._xmltv_sources_list[group_name] = urllist
-            except Exception, e:
+            except Exception as e:
                 msg = 'Corrupt override.xml file'
                 print(msg)
                 if DEBUG:
@@ -1304,7 +1311,7 @@ class Provider:
                         f.write("#NAME {}\n".format(bouquet_name.encode("utf-8")))
                         if not channel_number_start_offset_output and not self.config.all_bouquet:
                             # write place holder services (for channel numbering)
-                            for i in xrange(100):
+                            for i in range(100):
                                 f.write('{}\n'.format(PLACEHOLDER_SERVICE))
                             channel_number_start_offset_output = True
                             channel_num += 1
@@ -1314,7 +1321,7 @@ class Provider:
                                 self._save_bouquet_entry(f, x)
                             channel_num += 1
 
-                        while (channel_num % 100) is not 0:
+                        while (channel_num % 100) != 0:
                             f.write('{}\n'.format(PLACEHOLDER_SERVICE))
                             channel_num += 1
                 elif not vod_category_output and not self.config.multi_vod:
@@ -1328,7 +1335,7 @@ class Provider:
                         f.write("#NAME {}\n".format(bouquet_name.encode("utf-8")))
                         if not channel_number_start_offset_output and not self.config.all_bouquet:
                             # write place holder services (for channel numbering)
-                            for i in xrange(100):
+                            for i in range(100):
                                 f.write('{}\n'.format(PLACEHOLDER_SERVICE))
                             channel_number_start_offset_output = True
                             channel_num += 1
@@ -1342,7 +1349,7 @@ class Provider:
                                     self._save_bouquet_entry(f, x)
                                     channel_num += 1
 
-                                while (channel_num % 100) is not 0:
+                                while (channel_num % 100) != 0:
                                     f.write('{}\n'.format(PLACEHOLDER_SERVICE))
                                     channel_num += 1
                         vod_category_output = True
@@ -1367,7 +1374,7 @@ class Provider:
         # create channels file
         try:
             os.makedirs(EPGIMPORTPATH)
-        except OSError, e:  # race condition guard
+        except OSError as e:  # race condition guard
             if e.errno != errno.EEXIST:
                 raise
         channels_filename = os.path.join(EPGIMPORTPATH, 'suls_iptv_{}_channels.xml'.format(self._get_safe_provider_filename()))
@@ -1519,7 +1526,7 @@ class Config:
                 if provider.name:
                     self.providers[provider.name] = provider
                     provider_num += 1
-        except Exception, e:
+        except Exception as e:
             msg = 'Corrupt config.xml file'
             print(msg)
             if DEBUG:
@@ -1546,7 +1553,7 @@ class Config:
                 f.write('-->\r\n')
                 f.write('<config>\r\n')
 
-                for key, provider in self.providers.iteritems():
+                for key, provider in six.iteritems(self.providers):
                     f.write('{}<supplier>\r\n'.format(indent))
                     f.write('{}<name>{}</name><!-- Supplier Name -->\r\n'.format(2 * indent, xml_escape(provider.name)))
                     f.write('{}<enabled>{}</enabled><!-- Enable or disable the supplier (0 or 1) -->\r\n'.format(2 * indent, '1' if provider.enabled else '0'))
@@ -1657,7 +1664,7 @@ USAGE
                 e2m3u2b_config.read_config(os.path.join(CFGPATH, 'config.xml'))
                 providers_updated = False
 
-                for key, provider_config in e2m3u2b_config.providers.iteritems():
+                for key, provider_config in six.iteritems(e2m3u2b_config.providers):
                     if provider_config.enabled:
                         if provider_config.name.startswith('Supplier Name'):
                             print("Please enter your details in the config file in - {}".format(os.path.join(CFGPATH, 'config.xml')))
@@ -1692,7 +1699,7 @@ USAGE
         # handle keyboard interrupt
         return 0
 
-    except Exception, e:
+    except Exception as e:
         if DEBUG:
             raise e
         indent = len(program_name) * " "
