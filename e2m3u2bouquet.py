@@ -970,10 +970,10 @@ class Provider:
     def parse_data(self):
         # sort categories by custom order (if exists)
         sorted_categories = self._parse_map_bouquet_xml()
-        self._category_order = self._dictchannels.keys()
+        self._category_order = list(self._dictchannels.keys())
         sorted_categories.extend(self._category_order)
         # remove duplicates, keep order
-        self._category_order = OrderedDict((x, True) for x in sorted_categories).keys()
+        self._category_order = list(OrderedDict((x, True) for x in sorted_categories).keys())
         self._set_category_type()
 
         # Check for and parse override map
