@@ -20,7 +20,6 @@ import datetime
 import imghdr
 import tempfile
 import glob
-import ssl
 import hashlib
 import socket
 from PIL import Image
@@ -36,21 +35,28 @@ except ImportError:
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from six.moves import range
-from six.moves import urllib
 from xml.sax.saxutils import escape
+from Components.config import config
 
 import six
-from six.moves import urllib
-from six.moves.urllib.request import FancyURLopener, urlretrieve, urlopen
-from six.moves.urllib.parse import urlparse, quote, parse_qs, quote_plus
+import requests
 
+if six.PY3:
+     from urllib.parse import urlparse, quote, parse_qs, quote_plus
+else:
+     from urlparse import urlparse, quote, parse_qs, quote_plus
 
 __all__ = []
 __version__ = '0.8.5'
 __date__ = '2017-06-04'
 __updated__ = '2020-01-28'
 
-DEBUG = 0
+DEBUG = config.plugins.e2m3u2b.debug.value
+def debugNotifier(configElement):
+    global DEBUG
+    DEBUG = configElement.value
+config.plugins.e2m3u2b.debug.addNotifier(debugNotifier, initial_call=False)
+
 TESTRUN = 0
 
 ENIGMAPATH = '/etc/enigma2/'
@@ -59,6 +65,10 @@ CFGPATH = os.path.join(ENIGMAPATH, 'e2m3u2bouquet/')
 PICONSPATH = '/usr/share/enigma2/picon/'
 IMPORTED = False
 PLACEHOLDER_SERVICE = '#SERVICE 1:832:d:0:0:0:0:0:0:0:'
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+}
 
 
 class CLIError(Exception):
@@ -72,12 +82,6 @@ class CLIError(Exception):
 
     def __unicode__(self):
         return self.msg
-
-
-class AppUrlOpener(FancyURLopener):
-    """Set user agent for downloads
-    """
-    version = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
 
 
 def display_welcome():
@@ -184,52 +188,7 @@ def get_safe_filename(filename, fallback=''):
     name = re.sub(b'[^a-z0-9-_]', b'', name.lower())
     if not name:
         name = fallback
-    return name
-
-
-def get_parser_args(program_license, program_version_message):
-    parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
-    # URL Based Setup
-    urlgroup = parser.add_argument_group('URL Based Setup')
-    urlgroup.add_argument('-m', '--m3uurl', dest='m3uurl', action='store',
-                          help='URL to download m3u data from (required)')
-    urlgroup.add_argument('-e', '--epgurl', dest='epgurl', action='store',
-                          help='URL source for XML TV epg data sources')
-    # Provider based setup
-    providergroup = parser.add_argument_group('Provider Based Setup')
-    providergroup.add_argument('-n', '--providername', dest='providername', action='store',
-                               help='Host IPTV provider name (e.g. FAB/EPIC) (required)')
-    providergroup.add_argument('-u', '--username', dest='username', action='store',
-                               help='Your IPTV username (required)')
-    providergroup.add_argument('-p', '--password', dest='password', action='store',
-                               help='Your IPTV password (required)')
-    # Options
-    parser.add_argument('-i', '--iptvtypes', dest='iptvtypes', action='store_true',
-                        help='Treat all stream references as IPTV stream type. (required for some enigma boxes)')
-    parser.add_argument('-sttv', '--streamtype_tv', dest='sttv', action='store', type=int,
-                        help='Stream type for TV (e.g. 1, 4097, 5001 or 5002) overrides iptvtypes')
-    parser.add_argument('-stvod', '--streamtype_vod', dest='stvod', action='store', type=int,
-                        help='Stream type for VOD (e.g. 4097, 5001 or 5002) overrides iptvtypes')
-    parser.add_argument('-M', '--multivod', dest='multivod', action='store_true',
-                        help='Create multiple VOD bouquets rather single VOD bouquet')
-    parser.add_argument('-a', '--allbouquet', dest='allbouquet', action='store_true',
-                        help='Create all channels bouquet')
-    parser.add_argument('-P', '--picons', dest='picons', action='store_true',
-                        help='Automatically download of Picons, this option will slow the execution')
-    parser.add_argument('-q', '--iconpath', dest='iconpath', action='store',
-                        help='Option path to store picons, if not supplied defaults to /usr/share/enigma2/picon/')
-    parser.add_argument('-xs', '--xcludesref', dest='xcludesref', action='store_true',
-                        help='Disable service ref overriding from override.xml file')
-    parser.add_argument('-b', '--bouqueturl', dest='bouqueturl', action='store',
-                        help='URL to download providers bouquet - to map custom service references')
-    parser.add_argument('-bd', '--bouquetdownload', dest='bouquetdownload', action='store_true',
-                        help='Download providers bouquet (use default url) - to map custom service references')
-    parser.add_argument('-bt', '--bouquettop', dest='bouquettop', action='store_true',
-                        help='Place IPTV bouquets at top')
-    parser.add_argument('-U', '--uninstall', dest='uninstall', action='store_true',
-                        help='Uninstall all changes made by this script')
-    parser.add_argument('-V', '--version', action='version', version=program_version_message)
-    return parser
+    return six.ensure_str(name)
 
 
 class Status:
@@ -281,7 +240,7 @@ class Provider:
                 logo_url = 'http://{}'.format(logo_url)
             piconname = self._get_picon_name(channel)
             picon_file_path = os.path.join(self.config.icon_path, six.ensure_str(piconname))
-            existingpicon = filter(os.path.isfile, glob.glob(picon_file_path + '*'))
+            existingpicon = list(filter(os.path.isfile, glob.glob(picon_file_path + '*')))
 
             if not existingpicon:
                 if DEBUG:
@@ -294,11 +253,10 @@ class Provider:
                         sys.stdout.write('.')
                         sys.stdout.flush()
                 try:
-                    response = urlopen(logo_url)
-                    info = response.info()
-                    response.close()
-                    if info.maintype == 'image':
-                        urlretrieve(logo_url, picon_file_path)
+                    r = requests.get(logo_url, allow_redirects=True)
+                    if r.status_code == 200 and r.headers['Content-Type'].split(';')[0].lower().startswith("image/"):
+                        with open(picon_file_path, 'wb') as f:
+                            f.write(r.content)
                     else:
                         if DEBUG:
                             print('Download Picon - not an image, skipping')
@@ -306,7 +264,7 @@ class Provider:
                         return
                 except Exception as e:
                     if DEBUG:
-                        print(('Download picon urlopen error', e))
+                        print('Download picon error', e)
                     self._picon_create_empty(picon_file_path)
                     return
                 self._picon_post_processing(picon_file_path)
@@ -327,7 +285,7 @@ class Provider:
             ext = imghdr.what(picon_file_path)
         except Exception as e:
             if DEBUG:
-                print(('Picon post processing - not an image or no file', e, picon_file_path))
+                print('Picon post processing - not an image or no file', e, picon_file_path)
             self._picon_create_empty(picon_file_path)
             return
         # if image but not png convert to png
@@ -338,7 +296,7 @@ class Provider:
                 Image.open(picon_file_path).save("{}.{}".format(picon_file_path, 'png'))
             except Exception as e:
                 if DEBUG:
-                    print(('Picon post processing - unable to convert image', e))
+                    print('Picon post processing - unable to convert image', e)
                 self._picon_create_empty(picon_file_path)
                 return
             try:
@@ -346,7 +304,7 @@ class Provider:
                 os.remove(picon_file_path)
             except Exception as e:
                 if DEBUG:
-                    print(('Picon post processing - unable to remove non png file', e))
+                    print('Picon post processing - unable to remove non png file', e)
                 return
         else:
             # rename to correct extension
@@ -354,7 +312,7 @@ class Provider:
                 os.rename(picon_file_path, "{}.{}".format(picon_file_path, ext))
             except Exception as e:
                 if DEBUG:
-                    print(('Picon post processing - unable to rename file ', e))
+                    print('Picon post processing - unable to rename file ', e)
 
     def _get_picon_name(self, channel):
         """Convert the service name to a Picon Service Name
@@ -743,27 +701,21 @@ class Provider:
 
     def _process_provider_update(self):
         """Download provider update file from url"""
-        downloaded = False
         updated = False
 
         path = tempfile.gettempdir()
         filename = os.path.join(path, 'provider-{}-update.txt'.format(self.config.name))
         self._update_status('----Downloading providers update file----')
         print('\n{}'.format(Status.message))
-        print(('provider update url = ', self.config.provider_update_url))
+        print('provider update url = ', self.config.provider_update_url)
         try:
-            context = ssl._create_unverified_context()
-            urlretrieve(self.config.provider_update_url, filename, context=context)
-            downloaded = True
-        except Exception:
-            pass  # fallback to no ssl context
-
-        if not downloaded:
-            try:
-                urlretrieve(self.config.provider_update_url, filename)
-            except Exception as e:
-                print(('[e2m3u2b] process_provider_update error. Type:', type(e)))
-                print(('[e2m3u2b] process_provider_update error: ', e))
+            r = requests.get(self.config.provider_update_url, allow_redirects=True, verify=False) # verify=False means user created ssl certificates will be accepted
+            if r.status_code == 200:
+                with open(filename, 'wb') as f:
+                    f.write(r.content)
+        except Exception as e:
+            print('[e2m3u2b] process_provider_update error. Type:', type(e).__name__)
+            print('[e2m3u2b] process_provider_update error: ', e)
 
         if os.path.isfile(filename):
             try:
@@ -869,12 +821,17 @@ class Provider:
         if DEBUG:
             print("m3uurl = {}".format(self.config.m3u_url))
         try:
-            urlretrieve(self.config.m3u_url, filename)
+            r = requests.get(self.config.m3u_url, allow_redirects=True)  # to get content after redirection
+            if r.status_code == 200:
+                with open(filename, 'wb') as f:
+                    f.write(r.content)   
+            else:
+                filename = None
         except Exception as e:
             self._update_status('Unable to download m3u file from url')
             print(Status.message)
             filename = None
-        self._m3u_file = filename
+        self._m3u_file = filename      
 
     def parse_m3u(self):
         """core parsing routine"""
@@ -1054,17 +1011,21 @@ class Provider:
         if DEBUG:
             print("bouqueturl = {}".format(self.config.bouquet_url))
         try:
-            urlretrieve(self.config.bouquet_url, filename)
+            r = requests.get(self.config.bouquet_url, allow_redirects=True)
+            if r.status_code == 200:
+                with open(filename, 'wb') as f:
+                    f.write(r.content)
         except Exception as e:
-            msg = 'Unable to download providers panel bouquet file'
-            print(msg)
+            print('[e2m3u2b] download providers panel bouquet file error. Type:', type(e).__name__)
+            print('[e2m3u2b] download providers panel bouquet file error: ', e)
             if DEBUG:
-                raise msg
+                raise e
         self._panel_bouquet_file = filename
         self._parse_panel_bouquet()
 
     def download_picons(self):
-        self._update_status('----Downloading Picon files, please be patient----')
+        len_channels = len(self._dictchannels)
+        self._update_status('----Downloading Picon files (0/%d), please be patient----' % len_channels)
         print('\n{}'.format(Status.message))
         print('If no Picons exist this will take a few minutes')
         try:
@@ -1073,8 +1034,11 @@ class Provider:
             if e.errno != errno.EEXIST:
                 raise
 
+        i = 1
         for cat in self._dictchannels:
             if self._category_options[cat].get('type', 'live') == 'live':
+                self._update_status('----Downloading Picon files (%d/%d), please be patient----' % (i,len_channels))
+                i += 1
                 # Download Picon if not VOD
                 for x in self._dictchannels[cat]:
                     if not x['stream-name'].startswith('placeholder_'):
@@ -1585,8 +1549,54 @@ class Config:
                 os.remove(os.path.join(CFGPATH, 'config.xml'))
 
 
+def get_parser_args(program_license, program_version_message):
+    # this function is only used by main() when testing from the command line
+    parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
+    # URL Based Setup
+    urlgroup = parser.add_argument_group('URL Based Setup')
+    urlgroup.add_argument('-m', '--m3uurl', dest='m3uurl', action='store',
+                          help='URL to download m3u data from (required)')
+    urlgroup.add_argument('-e', '--epgurl', dest='epgurl', action='store',
+                          help='URL source for XML TV epg data sources')
+    # Provider based setup
+    providergroup = parser.add_argument_group('Provider Based Setup')
+    providergroup.add_argument('-n', '--providername', dest='providername', action='store',
+                               help='Host IPTV provider name (e.g. FAB/EPIC) (required)')
+    providergroup.add_argument('-u', '--username', dest='username', action='store',
+                               help='Your IPTV username (required)')
+    providergroup.add_argument('-p', '--password', dest='password', action='store',
+                               help='Your IPTV password (required)')
+    # Options
+    parser.add_argument('-i', '--iptvtypes', dest='iptvtypes', action='store_true',
+                        help='Treat all stream references as IPTV stream type. (required for some enigma boxes)')
+    parser.add_argument('-sttv', '--streamtype_tv', dest='sttv', action='store', type=int,
+                        help='Stream type for TV (e.g. 1, 4097, 5001 or 5002) overrides iptvtypes')
+    parser.add_argument('-stvod', '--streamtype_vod', dest='stvod', action='store', type=int,
+                        help='Stream type for VOD (e.g. 4097, 5001 or 5002) overrides iptvtypes')
+    parser.add_argument('-M', '--multivod', dest='multivod', action='store_true',
+                        help='Create multiple VOD bouquets rather single VOD bouquet')
+    parser.add_argument('-a', '--allbouquet', dest='allbouquet', action='store_true',
+                        help='Create all channels bouquet')
+    parser.add_argument('-P', '--picons', dest='picons', action='store_true',
+                        help='Automatically download of Picons, this option will slow the execution')
+    parser.add_argument('-q', '--iconpath', dest='iconpath', action='store',
+                        help='Option path to store picons, if not supplied defaults to /usr/share/enigma2/picon/')
+    parser.add_argument('-xs', '--xcludesref', dest='xcludesref', action='store_true',
+                        help='Disable service ref overriding from override.xml file')
+    parser.add_argument('-b', '--bouqueturl', dest='bouqueturl', action='store',
+                        help='URL to download providers bouquet - to map custom service references')
+    parser.add_argument('-bd', '--bouquetdownload', dest='bouquetdownload', action='store_true',
+                        help='Download providers bouquet (use default url) - to map custom service references')
+    parser.add_argument('-bt', '--bouquettop', dest='bouquettop', action='store_true',
+                        help='Place IPTV bouquets at top')
+    parser.add_argument('-U', '--uninstall', dest='uninstall', action='store_true',
+                        help='Uninstall all changes made by this script')
+    parser.add_argument('-V', '--version', action='version', version=program_version_message)
+    return parser
+
+
 def main(argv=None):  # IGNORE:C0111
-    # Command line options.
+    # for testing from the command line, e.g. "python /usr/lib/enigma2/python/Plugins/Extensions/E2m3u2bouquet/e2m3u2bouquet.py"
     if argv is None:
         argv = sys.argv
     else:
@@ -1614,7 +1624,6 @@ USAGE
         uninstall = args.uninstall
 
         # Core program logic starts here
-        urllib._urlopener = AppUrlOpener()
         socket.setdefaulttimeout(30)
         display_welcome()
 

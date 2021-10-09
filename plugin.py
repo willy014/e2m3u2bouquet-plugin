@@ -24,8 +24,6 @@ import twisted.python.runtime
 from . import e2m3u2bouquet
 
 import six
-from six.moves import urllib
-from six.moves.urllib.request import FancyURLopener
 
 
 try:
@@ -49,14 +47,6 @@ config.plugins.e2m3u2b.scheduletype = ConfigSelection(default='interval', choice
 config.plugins.e2m3u2b.updateinterval = ConfigSelectionNumber(default=6, min=2, max=48, stepwidth=1)
 config.plugins.e2m3u2b.schedulefixedtime = ConfigClock(default=0)
 config.plugins.e2m3u2b.autobouquetupdateatboot = ConfigYesNo(default=False)
-config.plugins.e2m3u2b.iconpath = ConfigSelection(default='/usr/share/enigma2/picon/',
-                                                  choices=['/usr/share/enigma2/picon/',
-                                                           '/media/usb/picon/',
-                                                           '/media/hdd/picon/',
-                                                           '/media/cf/picon/',
-                                                           '/media/mmc/picon/',
-                                                           '/picon/'
-                                                           ])
 config.plugins.e2m3u2b.last_update = ConfigText()
 config.plugins.e2m3u2b.extensions = ConfigYesNo(default=False)
 config.plugins.e2m3u2b.mainmenu = ConfigYesNo(default=False)
@@ -71,15 +61,10 @@ config.plugins.e2m3u2b.multivod = ConfigText(default='')
 config.plugins.e2m3u2b.bouquetpos = ConfigText(default='')
 config.plugins.e2m3u2b.allbouquet = ConfigText(default='')
 config.plugins.e2m3u2b.picons = ConfigText(default='')
+config.plugins.e2m3u2b.iconpath = ConfigText(default='')
 config.plugins.e2m3u2b.srefoverride = ConfigText(default='')
 config.plugins.e2m3u2b.bouquetdownload = ConfigText(default='')
 config.plugins.e2m3u2b.last_provider_update = ConfigText(default='')
-
-
-class AppUrlOpener(FancyURLopener):
-    """Set user agent for downloads
-    """
-    version = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
 
 
 class AutoStartTimer:
@@ -256,7 +241,6 @@ def do_reset():
 
 
 def main(session, **kwargs):
-    urllib._urlopener = AppUrlOpener()
     check_cfg_folder()
     set_default_do_epgimport()
 
@@ -318,7 +302,6 @@ def autostart(reason, session=None, **kwargs):
     # these globals need declared as they are reassigned here
     global autoStartTimer
     global _session
-    urllib._urlopener = AppUrlOpener()
     set_default_do_epgimport()
 
     print('[e2m3u2b] autostart {} occured at {}'.format(reason, time.time()), file=log)
