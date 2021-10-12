@@ -6,9 +6,6 @@ import errno
 import enigma
 from . import log
 
-from .menu import E2m3u2b_Menu
-from .menu import E2m3u2b_Check
-
 from enigma import eTimer
 from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
             ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, \
@@ -20,8 +17,6 @@ from Components.PluginComponent import plugins
 
 from twisted.internet import reactor, threads
 import twisted.python.runtime
-
-from . import e2m3u2bouquet
 
 import six
 
@@ -65,6 +60,9 @@ config.plugins.e2m3u2b.iconpath = ConfigText(default='')
 config.plugins.e2m3u2b.srefoverride = ConfigText(default='')
 config.plugins.e2m3u2b.bouquetdownload = ConfigText(default='')
 config.plugins.e2m3u2b.last_provider_update = ConfigText(default='')
+
+from .menu import E2m3u2b_Menu, E2m3u2b_Check
+from . import e2m3u2bouquet
 
 
 class AutoStartTimer:
