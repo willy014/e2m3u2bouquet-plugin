@@ -36,7 +36,7 @@ from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from six.moves import range
 from xml.sax.saxutils import escape
-from Components.config import config
+#from Components.config import config
 
 import six
 import requests
@@ -51,11 +51,13 @@ __version__ = '0.8.5'
 __date__ = '2017-06-04'
 __updated__ = '2020-01-28'
 
-DEBUG = config.plugins.e2m3u2b.debug.value
-def debugNotifier(configElement):
-    global DEBUG
-    DEBUG = configElement.value
-config.plugins.e2m3u2b.debug.addNotifier(debugNotifier, initial_call=False)
+DEBUG = 0
+
+#DEBUG = config.plugins.e2m3u2b.debug.value
+#def debugNotifier(configElement):
+#    global DEBUG
+#    DEBUG = configElement.value
+#config.plugins.e2m3u2b.debug.addNotifier(debugNotifier, initial_call=False)
 
 TESTRUN = 0
 
