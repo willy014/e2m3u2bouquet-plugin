@@ -7,6 +7,7 @@ import sys
 import enigma
 from . import log
 from . import plugin as E2m3u2b_Plugin
+from . import _
 
 from .about import E2m3u2b_About
 from .providers import E2m3u2b_Providers
@@ -67,7 +68,7 @@ class E2m3u2b_Menu(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
-        Screen.setTitle(self, "IPTV Bouquet Maker")
+        self.setTitle("IPTV Bouquet Maker")
         self.skinName = ['E2m3u2b_Menu', 'AutoBouquetsMaker_Menu']
 
         self.onChangedEntry = []
@@ -137,10 +138,7 @@ class E2m3u2b_Menu(Screen):
         """Remove any generated bouquets
         and epg importer config
         """
-        self.session.openWithCallback(self.reset_bouquets_callback, MessageBox, 'This will remove the IPTV Bouquets\n'
-                                                                                'and Epg Importer configs\n'
-                                                                                'that have been created.\n'
-                                                                                'Proceed?', MessageBox.TYPE_YESNO,
+        self.session.openWithCallback(self.reset_bouquets_callback, MessageBox, _("This will remove the IPTV Bouquets and Epg Importer configs that have been created.\n Proceed?"), MessageBox.TYPE_YESNO,
                                       default=False)
 
     def reset_bouquets_callback(self, confirmed):
@@ -190,8 +188,15 @@ class E2m3u2b_Config(ConfigListScreen, Screen):
         self['key_red'] = Button('Exit')
         self['key_green'] = Button('Ok')
         self['description'] = Label()
-
+        self["config"].onSelectionChanged.append(self.selectionChanged)
         self.createSetup()
+
+    def getCurrentDescription(self):
+        return self["config"].getCurrent() and len(self["config"].getCurrent()) > 2 and self["config"].getCurrent()[2] or ""
+
+    def selectionChanged(self):
+        if self["config"]:
+            self["description"].text = self.getCurrentDescription()
 
     def createSetup(self):
         self.editListEntry = None

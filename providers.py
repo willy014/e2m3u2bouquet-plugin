@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 from . import log
 from . import e2m3u2bouquet
+from . import _
+
 from enigma import eTimer
 from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
 			 ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, \
@@ -62,7 +64,7 @@ class E2m3u2b_Providers(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        Screen.setTitle(self, "IPTV Bouquet Maker - Providers")
+        self.setTitle(_("IPTV Bouquet Maker - Providers"))
         self.skinName = ['E2m3u2b_Providers', 'AutoBouquetsMaker_HideSections']
 
         self.drawList = []
@@ -87,7 +89,7 @@ class E2m3u2b_Providers(Screen):
 
         self["pleasewait"] = Label()
         self['no_providers'] = Label()
-        self['no_providers'].setText('No providers please add one (use green button) or create config.xml file')
+        self['no_providers'].setText(_("No providers please add one (use green button) or create config.xml file"))
         self['no_providers'].hide()
 
         self.onLayoutFinish.append(self.populate)
@@ -178,8 +180,8 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self.e2m3u2b_config = providers_config
         self.provider = provider
 
-        self.setup_title = 'Provider Configure - {}'.format(provider.name)
-        Screen.setTitle(self, self.setup_title)
+        self.setup_title = _('Provider Configure - {}').format(provider.name)
+        self.setTitle(self.setup_title)
         self.skinName = ["E2m3u2b_Providers_Config", "AutoBouquetsMaker_ProvidersSetup"]
 
         self.onChangedEntry = [ ]
@@ -207,8 +209,16 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self['key_yellow'] = Button('Delete')
         self['description'] = Label()
         self['pleasewait'] = Label()
-
+        self["config"].onSelectionChanged.append(self.selectionChanged)
         self.onLayoutFinish.append(self.populate)
+
+
+    def getCurrentDescription(self):
+        return self["config"].getCurrent() and len(self["config"].getCurrent()) > 2 and self["config"].getCurrent()[2] or ""
+
+    def selectionChanged(self):
+        if self["config"]:
+            self["description"].text = self.getCurrentDescription()
 
     def populate(self):
         self['actions'].setEnabled(False)
@@ -305,7 +315,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
 
         # if delete is set to true or empty name show message box to confirm deletion
         if self.provider_name.value == '' or self.provider_delete.value:
-            self.session.openWithCallback(self.delete_confirm, MessageBox, 'Confirm deletion of provider {}'.format(previous_name))
+            self.session.openWithCallback(self.delete_confirm, MessageBox, _('Confirm deletion of provider {}').format(previous_name))
         self.provider.enabled = self.provider_enabled.value
         self.provider.name = self.provider_name.value
         self.provider.settings_level = self.provider_settings_level.value
@@ -356,7 +366,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         #    self.close()
 
     def key_delete(self):
-        self.session.openWithCallback(self.delete_confirm, MessageBox, 'Confirm deletion of provider {}'.format(self.provider.name))
+        self.session.openWithCallback(self.delete_confirm, MessageBox, _('Confirm deletion of provider {}').format(self.provider.name))
 
     def delete_confirm(self, result):
         if not result:

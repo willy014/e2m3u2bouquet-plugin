@@ -5,6 +5,7 @@ import os
 import errno
 import enigma
 from . import log
+from . import _
 
 from enigma import eTimer
 from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
@@ -334,9 +335,7 @@ def extensions_menu(session, **kwargs):
 
 
 def quick_import_menu(session, **kwargs):
-    session.openWithCallback(quick_import_callback, MessageBox, "Update of channels will start.\n"
-                                                                "This may take a few minutes.\n"
-                                                                "Proceed?", MessageBox.TYPE_YESNO,
+    session.openWithCallback(quick_import_callback, MessageBox, _("Update of channels will start. This may take a few minutes.\nProceed?"), MessageBox.TYPE_YESNO,
                                                                 timeout=15, default=True)
 
 
@@ -373,7 +372,7 @@ def update_main_menu(cfg_el):
         print('[e2m3u2b] Failed to update main menu: ', e, file=log)
 
 plugin_name = 'IPTV Bouquet Maker'
-plugin_description = 'IPTV for Enigma2 - E2m3u2bouquet plugin'
+plugin_description = _("IPTV for Enigma2 - E2m3u2bouquet plugin")
 print('[e2m3u2b] add notifier')
 extDescriptor = PluginDescriptor(name=plugin_name, description=plugin_description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=extensions_menu)
 extDescriptorQuick = PluginDescriptor(name=plugin_name, description=plugin_description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=quick_import_menu)
