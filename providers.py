@@ -1,41 +1,26 @@
-from __future__ import absolute_import
-from __future__ import print_function
-import os
-from . import log
-from . import e2m3u2bouquet
-from . import _
+from __future__ import absolute_import, print_function
 
-from enigma import eTimer
-from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
-			 ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, \
-			 ConfigSelection, ConfigNumber, ConfigSubDict, NoSave, ConfigPassword, \
-             ConfigSelectionNumber
-from Screens.MessageBox import MessageBox
-from Screens.Screen import Screen
-from Components.config import config, \
-			 getConfigListEntry
-from Components.Label import Label
-from Components.ConfigList import ConfigListScreen
-from Components.ActionMap import ActionMap
-from Components.Button import Button
-from Components.Sources.List import List
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
-from Tools.LoadPixmap import LoadPixmap
-from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
+import os
+import xml.etree.cElementTree as ET
 
 import six
+from Components.ActionMap import ActionMap
+from Components.Button import Button
+from Components.config import ConfigEnableDisable, ConfigPassword, ConfigSelection, ConfigText, ConfigYesNo, getConfigListEntry
+from Components.ConfigList import ConfigListScreen
+from Components.Label import Label
+from Components.Sources.List import List
+from enigma import eTimer
+from Screens.MessageBox import MessageBox
+from Screens.Screen import Screen
+from Tools.Directories import SCOPE_ACTIVE_SKIN, SCOPE_CURRENT_SKIN, resolveFilename
+from Tools.LoadPixmap import LoadPixmap
 
-
-try:
-    from Tools.Directoires import SCOPE_ACTIVE_SKIN
-except:
-    pass
+from . import _, e2m3u2bouquet, log
 
 ENIGMAPATH = '/etc/enigma2/'
 CFGPATH = os.path.join(ENIGMAPATH, 'e2m3u2bouquet/')
+
 
 class E2m3u2b_Providers(Screen):
     skin = """
@@ -160,6 +145,7 @@ class E2m3u2b_Providers(Screen):
             self.e2m3u2b_config.providers.pop('New', None)
         self.refresh()
 
+
 class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
     skin = """
     <screen position="center,center" size="600,500">
@@ -184,7 +170,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self.setTitle(self.setup_title)
         self.skinName = ["E2m3u2b_Providers_Config", "AutoBouquetsMaker_ProvidersSetup"]
 
-        self.onChangedEntry = [ ]
+        self.onChangedEntry = []
         self.list = []
         ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
 
@@ -211,7 +197,6 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self['pleasewait'] = Label()
         self["config"].onSelectionChanged.append(self.selectionChanged)
         self.onLayoutFinish.append(self.populate)
-
 
     def getCurrentDescription(self):
         return self["config"].getCurrent() and len(self["config"].getCurrent()) > 2 and self["config"].getCurrent()[2] or ""

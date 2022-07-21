@@ -59,3 +59,8 @@ of entered using the remote
 #### v0.8.5
 * Unicode fixes
 * Override file fixes
+
+#### v0.9.0
+* PEP8
+* improve imports
+* use setup.xml

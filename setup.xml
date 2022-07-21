@@ -1,0 +1,15 @@
+<setupxml>
+	<setup key="E2m3u2b_Config" title="IPTV Bouquet Maker Configure">
+		<item level="0" text="Automatic bouquet update (schedule)" description="Enable to update bouquets on a schedule">config.plugins.e2m3u2b.autobouquetupdate</item>
+		<if conditional="config.plugins.e2m3u2b.autobouquetupdate.value">
+			<item level="0" text="Schedule type" description="Choose either a fixed time or an hourly update interval">config.plugins.e2m3u2b.scheduletype</item>
+			<item level="0" text="Update interval (hours)" description="Set the number of hours between automatic bouquet updates" conditional="config.plugins.e2m3u2b.scheduletype.value == 'interval'">config.plugins.e2m3u2b.updateinterval</item>
+			<item level="0" text="Time to start update" description="Set the day of time to perform the bouquet update" conditional="config.plugins.e2m3u2b.scheduletype.value == 'fixed time'">config.plugins.e2m3u2b.schedulefixedtime</item>
+		</if>
+		<item level="0" text="Automatic bouquet update (when box starts)" description="Update bouquets at startup">config.plugins.e2m3u2b.autobouquetupdateatboot</item>
+		<item level="0" text="Attempt Epg Import" description="Automatically run Epg Import after bouquet update">config.plugins.e2m3u2b.do_epgimport</item>
+		<item level="0" text="Show in extensions" description="Show in extensions menu">config.plugins.e2m3u2b.extensions</item>
+		<item level="0" text="Show in main menu" description="Show in main menu">config.plugins.e2m3u2b.mainmenu</item>
+		<item level="0" text="Debug mode" description="Enable debug mode. Do not enable unless requested">config.plugins.e2m3u2b.debug</item>
+	</setup>
+</setupxml>

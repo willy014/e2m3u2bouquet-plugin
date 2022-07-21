@@ -47,9 +47,9 @@ else:
      from urlparse import urlparse, quote, parse_qs, quote_plus
 
 __all__ = []
-__version__ = '0.8.5'
+__version__ = '0.9.0'
 __date__ = '2017-06-04'
-__updated__ = '2020-01-28'
+__updated__ = '2022-07-21'
 
 DEBUG = 0
 
@@ -75,6 +75,7 @@ myheaders = {
 
 class CLIError(Exception):
     """Generic exception to raise and log different fatal errors."""
+
     def __init__(self, msg):
         super(CLIError).__init__(type(self))
         self.msg = "E: %s" % msg
@@ -92,6 +93,7 @@ def display_welcome():
     print(str(datetime.datetime.now()))
     print("********************************\n")
 
+
 def display_end_msg():
     print("\n********************************")
     print("Enigma2 IPTV bouquets created ! ")
@@ -102,6 +104,7 @@ def display_end_msg():
     print("(will be listed as under 'IPTV Bouquet Maker - E2m3u2bouquet')")
     print("Save the selected sources, press yellow button to start manual import")
     print("You can then set EPG-Importer to automatically import the EPG every day")
+
 
 def make_config_folder():
     """create config folder if it doesn't exist
@@ -171,13 +174,14 @@ def reload_bouquets():
             os.system("wget -qO - http://127.0.0.1/web/servicelistreload?mode=2 > /dev/null 2>&1 &")
             print("bouquets reloaded...")
 
+
 def xml_escape(string):
     return escape(string, {'"': '&quot;', "'": "&apos;"})
 
 
 def xml_safe_comment(string):
     """Can't have -- in xml comments"""
-    return string.replace('--','- - ')
+    return string.replace('--', '- - ')
 
 
 def get_safe_filename(filename, fallback=''):
@@ -545,7 +549,6 @@ class Provider:
                 if DEBUG:
                     raise msg
 
-
     def _get_mapping_file(self):
         mapping_file = None
         provider_safe_filename = self._get_safe_provider_filename()
@@ -554,7 +557,7 @@ class Provider:
         for path in search_path:
             if os.path.isfile(path):
                 mapping_file = path
-                break;
+                break
         return mapping_file
 
     def _save_bouquet_entry(self, f, channel):
@@ -711,7 +714,7 @@ class Provider:
         print('\n{}'.format(Status.message))
         print('provider update url = ', self.config.provider_update_url)
         try:
-            r = requests.get(self.config.provider_update_url, headers=myheaders, allow_redirects=True, verify=False) # verify=False means user created ssl certificates will be accepted
+            r = requests.get(self.config.provider_update_url, headers=myheaders, allow_redirects=True, verify=False)  # verify=False means user created ssl certificates will be accepted
             if r.status_code == 200:
                 with open(filename, 'wb') as f:
                     f.write(r.content)
@@ -827,7 +830,7 @@ class Provider:
             print("[e2m3u2Bouquet] status code=%s" % r.status_code)
             if r.status_code == 200:
                 with open(filename, 'wb') as f:
-                    f.write(r.content)   
+                    f.write(r.content)
             else:
                 filename = None
         except Exception as e:
@@ -835,7 +838,7 @@ class Provider:
             print(Status.message)
             filename = None
         self._m3u_file = filename
-        # print("[e2m3u2Bouquet] filename=%s" % filename)      
+        # print("[e2m3u2Bouquet] filename=%s" % filename)
 
     def parse_m3u(self):
         """core parsing routine"""
@@ -1041,7 +1044,7 @@ class Provider:
         i = 1
         for cat in self._dictchannels:
             if self._category_options[cat].get('type', 'live') == 'live':
-                self._update_status('----Downloading Picon files (%d/%d), please be patient----' % (i,len_channels))
+                self._update_status('----Downloading Picon files (%d/%d), please be patient----' % (i, len_channels))
                 i += 1
                 # Download Picon if not VOD
                 for x in self._dictchannels[cat]:
@@ -1719,6 +1722,7 @@ USAGE
         sys.stderr.write(program_name + ": " + repr(e) + "\n")
         sys.stderr.write(indent + "  for help use --help")
         return 2
+
 
 if __name__ == "__main__":
     if TESTRUN:

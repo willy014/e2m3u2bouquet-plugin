@@ -1,42 +1,25 @@
-from __future__ import absolute_import
-from __future__ import print_function
-import time
+from __future__ import absolute_import, print_function
+
 import os
-import tempfile
 import sys
-import enigma
-from . import log
-from . import plugin as E2m3u2b_Plugin
-from . import _
+import tempfile
 
-from .about import E2m3u2b_About
-from .providers import E2m3u2b_Providers
-
-from enigma import eTimer
-from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
-            ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, \
-            ConfigSelection, ConfigNumber, ConfigSubDict, NoSave, ConfigPassword, \
-            ConfigSelectionNumber
-from Screens.MessageBox import MessageBox
-from Screens.Screen import Screen
-from Screens.ChoiceBox import ChoiceBox
-from Components.ConfigList import ConfigListScreen
-from Components.Sources.StaticText import StaticText
 from Components.ActionMap import ActionMap
 from Components.Button import Button
-from Components.Sources.List import List
+from Components.config import ConfigSelection, ConfigYesNo, config, getConfigListEntry
+from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
-from Components.SelectionList import SelectionList, SelectionEntryComponent
 from Components.ScrollLabel import ScrollLabel
-
-from Tools.Directories import resolveFilename, SCOPE_CURRENT_SKIN
-try:
-    from Tools.Directoires import SCOPE_ACTIVE_SKIN
-except:
-    pass
+from Components.Sources.List import List
+from enigma import eTimer, eEPGCache
+from Screens.MessageBox import MessageBox
+from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
-from . import e2m3u2bouquet
+from . import _, e2m3u2bouquet, log
+from . import plugin as E2m3u2b_Plugin
+from .about import E2m3u2b_About
+from .providers import E2m3u2b_Providers
 
 try:
     import Plugins.Extensions.EPGImport.EPGImport as EPGImport
@@ -89,7 +72,7 @@ class E2m3u2b_Menu(Screen):
 
         if EPGImport and config.plugins.e2m3u2b.do_epgimport.value is True:
             # skip channelfilter for IPTV
-            self.epgimport = EPGImport.EPGImport(enigma.eEPGCache.getInstance(), lambda x: True)
+            self.epgimport = EPGImport.EPGImport(eEPGCache.getInstance(), lambda x: True)
         self.createSetup()
 
     def createSetup(self):
@@ -138,7 +121,7 @@ class E2m3u2b_Menu(Screen):
         """Remove any generated bouquets
         and epg importer config
         """
-        self.session.openWithCallback(self.reset_bouquets_callback, MessageBox, _("This will remove the IPTV Bouquets and Epg Importer configs that have been created.\n Proceed?"), MessageBox.TYPE_YESNO,
+        self.session.openWithCallback(self.reset_bouquets_callback, MessageBox, _("This will remove the IPTV Bouquets and Epg Importer configs that have been created.\nProceed?"), MessageBox.TYPE_YESNO,
                                       default=False)
 
     def reset_bouquets_callback(self, confirmed):
@@ -172,7 +155,7 @@ class E2m3u2b_Config(ConfigListScreen, Screen):
         Screen.setTitle(self, self.setup_title)
         self.skinName = ["E2m3u2b_Config", "AutoBouquetsMaker_Setup"]
 
-        self.onChangedEntry = [ ]
+        self.onChangedEntry = []
         self.list = []
         ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
 
@@ -251,7 +234,6 @@ class E2m3u2b_Config(ConfigListScreen, Screen):
                 x.value = ''
                 x.save()
 
-
     def cancelConfirm(self, result):
         if not result:
             return
@@ -264,6 +246,7 @@ class E2m3u2b_Config(ConfigListScreen, Screen):
             self.session.openWithCallback(self.cancelConfirm, MessageBox, 'Really close without saving settings?')
         else:
             self.close()
+
 
 class E2m3u2b_Status(Screen):
     skin = """
@@ -338,7 +321,7 @@ class E2m3u2b_Log(Screen):
         self.close(False)
 
     def keyClear(self):
-        log.logfile.reset() # this crashes Py3
+        log.logfile.reset()  # this crashes Py3
         log.logfile.truncate()
         self.close(False)
 
@@ -410,8 +393,7 @@ class E2m3u2b_Update(Screen):
             is_epgimport_running = self.epgimport.isImportRunning()
 
         if is_epgimport_running or e2m3u2bouquet.Status.is_running:
-            self.session.open(MessageBox, "Update still in progress. Please wait."
-                              , MessageBox.TYPE_ERROR, timeout=10, close_on_any_key=True)
+            self.session.open(MessageBox, "Update still in progress. Please wait.", MessageBox.TYPE_ERROR, timeout=10, close_on_any_key=True)
             self.close()
             return
         else:

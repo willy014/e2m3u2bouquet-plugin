@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-20 17:07+0000\n"
-"PO-Revision-Date: 2022-07-21 05:53+0000\n"
+"POT-Creation-Date: 2022-07-21 19:32+0000\n"
+"PO-Revision-Date: 2022-07-21 19:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -18,10 +18,37 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
+msgid "Attempt Epg Import"
+msgstr ""
+
+msgid "Automatic bouquet update (schedule)"
+msgstr ""
+
+msgid "Automatic bouquet update (when box starts)"
+msgstr ""
+
+msgid "Automatically run Epg Import after bouquet update"
+msgstr ""
+
+msgid "Choose either a fixed time or an hourly update interval"
+msgstr ""
+
 msgid "Confirm deletion of provider {}"
 msgstr ""
 
+msgid "Debug mode"
+msgstr ""
+
+msgid "Enable debug mode. Do not enable unless requested"
+msgstr ""
+
+msgid "Enable to update bouquets on a schedule"
+msgstr ""
+
 msgid "IPTV Bouquet Maker - Providers"
+msgstr ""
+
+msgid "IPTV Bouquet Maker Configure"
 msgstr ""
 
 msgid "IPTV for Enigma2 - E2m3u2bouquet plugin"
@@ -34,10 +61,37 @@ msgstr ""
 msgid "Provider Configure - {}"
 msgstr ""
 
+msgid "Schedule type"
+msgstr ""
+
+msgid "Set the day of time to perform the bouquet update"
+msgstr ""
+
+msgid "Set the number of hours between automatic bouquet updates"
+msgstr ""
+
+msgid "Show in extensions"
+msgstr ""
+
+msgid "Show in extensions menu"
+msgstr ""
+
+msgid "Show in main menu"
+msgstr ""
+
 msgid ""
 "This will remove the IPTV Bouquets and Epg Importer configs that have been "
 "created.\n"
-" Proceed?"
+"Proceed?"
+msgstr ""
+
+msgid "Time to start update"
+msgstr ""
+
+msgid "Update bouquets at startup"
+msgstr ""
+
+msgid "Update interval (hours)"
 msgstr ""
 
 msgid ""

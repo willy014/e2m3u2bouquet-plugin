@@ -1,30 +1,23 @@
-from __future__ import absolute_import
-from __future__ import print_function
-import time
-import os
+from __future__ import absolute_import, print_function
+
 import errno
-import enigma
-from . import log
-from . import _
-
-from enigma import eTimer
-from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
-            ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, \
-            ConfigSelection, ConfigNumber, ConfigSubDict, NoSave, ConfigPassword, \
-            ConfigSelectionNumber
-from Screens.MessageBox import MessageBox
-from Plugins.Plugin import PluginDescriptor
-from Components.PluginComponent import plugins
-
-from twisted.internet import reactor, threads
-import twisted.python.runtime
+import os
+import time
 
 import six
+import twisted.python.runtime
+from Components.config import ConfigClock, ConfigEnableDisable, ConfigSelection, ConfigSelectionNumber, ConfigSubsection, ConfigText, ConfigYesNo, config
+from Components.PluginComponent import plugins
+from enigma import eTimer, eEPGCache
+from Plugins.Plugin import PluginDescriptor
+from Screens.MessageBox import MessageBox
+from twisted.internet import threads
 
+from . import _, log
 
 try:
-    import Plugins.Extensions.EPGImport.EPGImport as EPGImport
     import Plugins.Extensions.EPGImport.EPGConfig as EPGConfig
+    import Plugins.Extensions.EPGImport.EPGImport as EPGImport
 except ImportError:
     EPGImport = None
     EPGConfig = None
@@ -62,8 +55,8 @@ config.plugins.e2m3u2b.srefoverride = ConfigText(default='')
 config.plugins.e2m3u2b.bouquetdownload = ConfigText(default='')
 config.plugins.e2m3u2b.last_provider_update = ConfigText(default='')
 
-from .menu import E2m3u2b_Menu, E2m3u2b_Check
 from . import e2m3u2bouquet
+from .menu import E2m3u2b_Check, E2m3u2b_Menu
 
 
 class AutoStartTimer:
@@ -181,7 +174,7 @@ def start_update_callback(result, epgimport_sourcefiles, start_time, epgimport=N
     # Attempt automatic epg import is option enabled and epgimport plugin detected
     if EPGImport and config.plugins.e2m3u2b.do_epgimport.value is True:
         if epgimport is None:
-            epgimport = EPGImport.EPGImport(enigma.eEPGCache.getInstance(), lambda x: True)
+            epgimport = EPGImport.EPGImport(eEPGCache.getInstance(), lambda x: True)
 
         sources = [s for s in epgimport_sources(epgimport_sourcefiles)]
         sources.reverse()
@@ -335,8 +328,7 @@ def extensions_menu(session, **kwargs):
 
 
 def quick_import_menu(session, **kwargs):
-    session.openWithCallback(quick_import_callback, MessageBox, _("Update of channels will start. This may take a few minutes.\nProceed?"), MessageBox.TYPE_YESNO,
-                                                                timeout=15, default=True)
+    session.openWithCallback(quick_import_callback, MessageBox, _("Update of channels will start. This may take a few minutes.\nProceed?"), MessageBox.TYPE_YESNO, timeout=15, default=True)
 
 
 def quick_import_callback(confirmed):
@@ -371,6 +363,7 @@ def update_main_menu(cfg_el):
     except Exception as e:
         print('[e2m3u2b] Failed to update main menu: ', e, file=log)
 
+
 plugin_name = 'IPTV Bouquet Maker'
 plugin_description = _("IPTV for Enigma2 - E2m3u2bouquet plugin")
 print('[e2m3u2b] add notifier')
@@ -399,7 +392,7 @@ def Plugins(**kwargs):
             where=PluginDescriptor.WHERE_PLUGINMENU,
             icon='images/e2m3ubouquetlogo.png',
             fnc=main
-        )#,
+        )  # ,
         #PluginDescriptor(
         #    name=plugin_name,
         #    description=plugin_description,

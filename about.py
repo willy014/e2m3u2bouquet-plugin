@@ -1,12 +1,10 @@
-from __future__ import absolute_import
-import os
-import sys
-from . import e2m3u2bouquet
-
-from Screens.Screen import Screen
-from Components.Label import Label
 from Components.ActionMap import ActionMap
 from Components.Button import Button
+from Components.Label import Label
+from Screens.Screen import Screen
+
+from . import e2m3u2bouquet
+
 
 class E2m3u2b_About(Screen):
     skin = """
