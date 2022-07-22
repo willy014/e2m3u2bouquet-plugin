@@ -14,6 +14,7 @@ from Components.Sources.List import List
 from enigma import eTimer, eEPGCache
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
+from Screens.Setup import Setup
 from Tools.LoadPixmap import LoadPixmap
 
 from . import _, e2m3u2bouquet, log
@@ -138,7 +139,12 @@ class E2m3u2b_Menu(Screen):
         self.close()
 
 
-class E2m3u2b_Config(ConfigListScreen, Screen):
+class E2m3u2b_Config(Setup):
+    def __init__(self, session):
+        Setup.__init__(self, session, "E2m3u2b_Config", plugin="Extensions/E2m3u2bouquet", PluginLanguageDomain="E2m3u2bouquet")
+
+
+class _E2m3u2b_Config(ConfigListScreen, Screen):
     skin = """
         <screen position="center,center" size="600,500">
         <ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" transparent="1" alphatest="on" />
@@ -217,22 +223,7 @@ class E2m3u2b_Config(ConfigListScreen, Screen):
 
     def keySave(self):
         self.saveAll()
-        self.reset_legacy_config()
-        config.plugins.e2m3u2b.cfglevel.value = '2'
-        config.plugins.e2m3u2b.cfglevel.save()
         self.close()
-
-    def reset_legacy_config(self):
-        if config.plugins.e2m3u2b.cfglevel.value == '1':
-            cfg_list = [config.plugins.e2m3u2b.providername, config.plugins.e2m3u2b.username,
-                        config.plugins.e2m3u2b.password, config.plugins.e2m3u2b.iptvtypes,
-                        config.plugins.e2m3u2b.multivod, config.plugins.e2m3u2b.bouquetpos,
-                        config.plugins.e2m3u2b.allbouquet, config.plugins.e2m3u2b.picons,
-                        config.plugins.e2m3u2b.srefoverride, config.plugins.e2m3u2b.bouquetdownload,
-                        config.plugins.e2m3u2b.last_provider_update]
-            for x in cfg_list:
-                x.value = ''
-                x.save()
 
     def cancelConfirm(self, result):
         if not result:

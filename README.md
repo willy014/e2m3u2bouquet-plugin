@@ -64,3 +64,4 @@ of entered using the remote
 * PEP8
 * improve imports
 * use setup.xml
+* remove legacy config

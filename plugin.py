@@ -29,7 +29,6 @@ providers_list = {}
 
 # Set default configuration
 config.plugins.e2m3u2b = ConfigSubsection()
-config.plugins.e2m3u2b.cfglevel = ConfigText(default='')
 config.plugins.e2m3u2b.debug = ConfigEnableDisable(default=False)
 config.plugins.e2m3u2b.autobouquetupdate = ConfigYesNo(default=False)
 config.plugins.e2m3u2b.scheduletype = ConfigSelection(default='interval', choices=['interval', 'fixed time'])
@@ -41,19 +40,6 @@ config.plugins.e2m3u2b.extensions = ConfigYesNo(default=False)
 config.plugins.e2m3u2b.mainmenu = ConfigYesNo(default=False)
 config.plugins.e2m3u2b.do_epgimport = ConfigYesNo(default=True)
 
-# legacy config
-config.plugins.e2m3u2b.providername = ConfigText(default='')
-config.plugins.e2m3u2b.username = ConfigText(default='')
-config.plugins.e2m3u2b.password = ConfigText(default='')
-config.plugins.e2m3u2b.iptvtypes = ConfigText(default='')
-config.plugins.e2m3u2b.multivod = ConfigText(default='')
-config.plugins.e2m3u2b.bouquetpos = ConfigText(default='')
-config.plugins.e2m3u2b.allbouquet = ConfigText(default='')
-config.plugins.e2m3u2b.picons = ConfigText(default='')
-config.plugins.e2m3u2b.iconpath = ConfigText(default='')
-config.plugins.e2m3u2b.srefoverride = ConfigText(default='')
-config.plugins.e2m3u2b.bouquetdownload = ConfigText(default='')
-config.plugins.e2m3u2b.last_provider_update = ConfigText(default='')
 
 from . import e2m3u2bouquet
 from .menu import E2m3u2b_Check, E2m3u2b_Menu
@@ -192,9 +178,6 @@ def start_process_providers(providers_to_process, e2m3u2b_config):
         if int(time.time()) - int(provider.config.last_provider_update) > 21600:
             # wait at least 6 hours (21600s) between update checks
             providers_updated = provider.provider_update()
-        # Use plugin config picon path if none set
-        if not provider.config.icon_path:
-            provider.config.icon_path = config.plugins.e2m3u2b.iconpath.value
 
         print('[e2m3u2b] Starting backend script {}'.format(provider.config.name), file=log)
         provider.process_provider()
@@ -234,20 +217,12 @@ def do_reset():
 
 def main(session, **kwargs):
     check_cfg_folder()
-    set_default_do_epgimport()
 
     # Show message if EPG Import is not detected
     if not EPGImport:
         session.openWithCallback(open_menu(session), E2m3u2b_Check)
     else:
         open_menu(session)
-
-
-def set_default_do_epgimport():
-    if config.plugins.e2m3u2b.cfglevel.value == '1':
-        # default to not try epg import if existing config exists
-        config.plugins.e2m3u2b.do_epgimport.value = False
-        config.plugins.e2m3u2b.do_epgimport.save()
 
 
 def open_menu(session):
@@ -294,7 +269,6 @@ def autostart(reason, session=None, **kwargs):
     # these globals need declared as they are reassigned here
     global autoStartTimer
     global _session
-    set_default_do_epgimport()
 
     print('[e2m3u2b] autostart {} occured at {}'.format(reason, time.time()), file=log)
     if reason == 0 and _session is None:
