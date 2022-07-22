@@ -8,7 +8,7 @@ import six
 import twisted.python.runtime
 from Components.config import ConfigClock, ConfigEnableDisable, ConfigSelection, ConfigSelectionNumber, ConfigSubsection, ConfigText, ConfigYesNo, config
 from Components.PluginComponent import plugins
-from enigma import eTimer, eEPGCache
+from enigma import eEPGCache, eTimer
 from Plugins.Plugin import PluginDescriptor
 from Screens.MessageBox import MessageBox
 from twisted.internet import threads
