@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-20 12:31+0200\n"
-"PO-Revision-Date: 2022-10-20 12:37+0200\n"
+"PO-Revision-Date: 2022-10-20 16:51+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,111 +16,118 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1.1\n"
 
 msgid "About"
-msgstr ""
+msgstr "Über"
 
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 msgid "All IPTV Type:"
-msgstr ""
+msgstr "Alle IPTV Typen:"
 
 msgid "Attempt Epg Import"
-msgstr ""
+msgstr "EPG Import einbeziehen"
 
 msgid "Automatic bouquet update (schedule)"
-msgstr ""
+msgstr "Automatische Aktualisierung des Bouquets (Zeitplan)"
 
 msgid "Automatic bouquet update (when box starts)"
-msgstr ""
+msgstr "Automatische Aktualisierung des Bouquets (wenn die Box gestartet wird)"
 
 msgid "Automatically run Epg Import after bouquet update"
 msgstr ""
+"Automatisches Ausführen von EPG Import nach Aktualisierung des Bouquets"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 msgid "Check providers bouquet"
-msgstr ""
+msgstr "Überprüfe Bouquets des Anbieters"
 
 msgid "Choose either a fixed time or an hourly update interval"
 msgstr ""
+"Wähle zwischen einer festen Zeit oder einem stündlichen "
+"Aktualisierungsintervall"
 
 msgid "Choose level of settings. Expert shows all options"
-msgstr ""
+msgstr "Wähle Stufe der Einstellungen. Experte zeigt alle Optionen"
 
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 msgid "Configure"
-msgstr ""
+msgstr "Konfigurieren"
 
 msgid "Confirm deletion of provider {}"
-msgstr ""
+msgstr "Bestätige löschen des Anbieters"
 
 msgid "Create Bouquets"
-msgstr ""
+msgstr "Erstelle Bouquets"
 
 msgid "Create a bouquet containing all channels"
-msgstr ""
+msgstr "Erstelle ein Bouquet welches alle Kanäle beinhaltet"
 
 msgid "Create all channels bouquet:"
-msgstr ""
+msgstr "Erstelle Bouquet mit allen Kanälen:"
 
 msgid "Debug mode"
 msgstr ""
 
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 msgid "Delete provider {}"
-msgstr ""
+msgstr "Lösche Anbieter {}"
 
 msgid "Delete:"
-msgstr ""
+msgstr "Löschen:"
 
 msgid ""
 "EPG Import not found\n"
 "Please install the EPG Import plugin"
 msgstr ""
+"EPG Import nicht gefunden\n"
+"Bitte EPG Import Plugin installieren"
 
 msgid "EPG Import: Importing {} {} events"
-msgstr ""
+msgstr "EPG Import: Importiere {} {} Ereignisse"
 
 msgid "Enable debug mode. Do not enable unless requested"
-msgstr ""
+msgstr "Aktiviere Debugmodus. Nur aktivieren wenn gefordert"
 
 msgid "Enable provider {}"
-msgstr ""
+msgstr "Aktiviere Anbieter {}"
 
 msgid "Enable this option to check and use providers custom service refs"
 msgstr ""
+"Aktivieren Sie diese Option, um benutzerdefinierte Service-Referenzen von "
+"Anbietern zu prüfen und zu verwenden"
 
 msgid "Enable to update bouquets on a schedule"
-msgstr ""
+msgstr "Aktualisierung der Bouquets nach einem Zeitplan ermöglichen"
 
 msgid "Enabled:"
-msgstr ""
+msgstr "Aktivieren:"
 
 msgid "Exit"
-msgstr ""
+msgstr "Beenden"
 
 msgid "IPTV Bouquet Maker - Providers"
-msgstr ""
+msgstr "IPTV Bouquet Maker - Anbieter"
 
 msgid "IPTV Bouquet Maker Configure"
-msgstr ""
+msgstr "IPTV Bouquet Maker Konfigurieren"
 
 msgid "IPTV for Enigma2 - E2m3u2bouquet plugin"
-msgstr ""
+msgstr "IPTV für Enigma2 - E2m3u2bouquet plugin"
 
 msgid "Last channel update: {}"
-msgstr ""
+msgstr "Letzte Kanalaktualisierung: {}"
 
 msgid "Log file has been saved to the tmp directory"
-msgstr ""
+msgstr "Log Datei wurde im tmp Verzeichnis gespeichert"
 
 msgid "Name:"
 msgstr ""
@@ -128,109 +135,128 @@ msgstr ""
 msgid ""
 "No providers please add one (use green button) or create config.xml file"
 msgstr ""
+"Keine Anbieter, bitte einen hinzufügen (drücke grüne Taste) oder erzeuge die "
+"config.xml Datei"
 
 msgid ""
 "Normally should be left disabled. Setting to enabled may allow recording on "
 "some boxes. If you playback issues (e.g. stuttering on channels) set back to "
 "disabled"
 msgstr ""
+"Normal deaktiviert lassen. Aktiviert kann es Aufnahmen auf manchen Boxen "
+"ermöglichen. Bei Problemen bei der Wiedergabe bitte wieder deaktivieren"
 
 msgid "Override service refs"
-msgstr ""
+msgstr "Überschreibe Service Referenzen"
 
 msgid "Please wait..."
-msgstr ""
+msgstr "Bitte warten..."
 
 msgid "Provider Configure - {}"
-msgstr ""
+msgstr "Anbieter konfigurieren - {}"
 
 msgid "Provider name"
-msgstr ""
+msgstr "Anbieter Name"
 
 msgid "Providers"
-msgstr ""
+msgstr "Anbieter"
 
 msgid "Reset Bouquets"
-msgstr ""
+msgstr "Zurücksetzen der Bouquets"
 
 msgid "Run"
-msgstr ""
+msgstr "Ausführen"
 
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 msgid "Schedule type"
-msgstr ""
+msgstr "Zeitplantyp"
 
 msgid "Set the day of time to perform the bouquet update"
 msgstr ""
+"Legen Sie den Tag und die Uhrzeit fest, an dem die Aktualisierung des "
+"Bouquets erfolgen soll"
 
 msgid "Set the number of hours between automatic bouquet updates"
 msgstr ""
+"Legen Sie die Anzahl der Stunden zwischen automatischen Bouquet-"
+"Aktualisierungen fest"
 
 msgid "Setup mode:"
-msgstr ""
+msgstr "Setup-Modus:"
 
 msgid ""
 "Should be left disabled unless you need to use the override.xml to override "
 "service refs (e.g. for DVB to IPTV EPG mapping)"
 msgstr ""
+"Sollte deaktiviert bleiben, es sei denn, Sie verwenden die Datei override."
+"xml, um die Service-Referencen zu überschreiben"
 
 msgid "Show Log"
-msgstr ""
+msgstr "Log anzeigen"
 
 msgid "Show in extensions"
-msgstr ""
+msgstr "Unter Erweiterungen anzeigen"
 
 msgid "Show in extensions menu"
-msgstr ""
+msgstr "Im Erweiterungsmenu anzeigen"
 
 msgid "Show in main menu"
-msgstr ""
+msgstr "Im Hauptmenu anzeigen"
 
 msgid "Starting..."
-msgstr ""
+msgstr "Starten..."
 
 msgid "Status"
 msgstr ""
 
 msgid "Stream type for TV services"
-msgstr ""
+msgstr "Streamtyp für TV Dienste"
 
 msgid "Stream type for VOD services"
-msgstr ""
+msgstr "Streamtyp für VOD"
 
 msgid "TV Stream Type:"
-msgstr ""
+msgstr "TV-Stream-Typ:"
 
 msgid ""
 "This will remove the IPTV Bouquets and Epg Importer configs that have been "
 "created.\n"
 "Proceed?"
 msgstr ""
+"Dadurch werden die erstellten IPTV-Bouquets und Epg-Importer-Konfigurationen "
+"entfernt.\n"
+"Fortfahren?"
 
 msgid "Time to start update"
-msgstr ""
+msgstr "Zeit um die Aktualisierung zu starten"
 
 msgid "Update bouquets at startup"
-msgstr ""
+msgstr "Aktualisierung beim Start"
 
 msgid "Update interval (hours)"
-msgstr ""
+msgstr "Aktualisierungsintervall (Stunden)"
 
 msgid ""
 "Update of channels will start.\n"
 "This may take a few minutes.\n"
 "Proceed?"
 msgstr ""
+"Aktualisierung startet.\n"
+"Das kann einige Minuten dauern.\n"
+"weitermachen?"
 
 msgid ""
 "Update of channels will start. This may take a few minutes.\n"
 "Proceed?"
 msgstr ""
+"Aktualisierung startet.\n"
+"Das kann einige Minuten dauern.\n"
+"weitermachen?"
 
 msgid "Update still in progress. Please wait."
-msgstr ""
+msgstr "Aktualisierung läuft noch. Bitte warten."
 
 msgid "VOD Stream Type:"
-msgstr ""
+msgstr "VOD Stream-Typ:"
