@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-21 19:32+0000\n"
+"POT-Creation-Date: 2022-10-20 12:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "About"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "All IPTV Type:"
+msgstr ""
 
 msgid "Attempt Epg Import"
 msgstr ""
@@ -29,19 +38,72 @@ msgstr ""
 msgid "Automatically run Epg Import after bouquet update"
 msgstr ""
 
+msgid "Cancel"
+msgstr ""
+
+msgid "Check providers bouquet"
+msgstr ""
+
 msgid "Choose either a fixed time or an hourly update interval"
+msgstr ""
+
+msgid "Choose level of settings. Expert shows all options"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Configure"
 msgstr ""
 
 msgid "Confirm deletion of provider {}"
 msgstr ""
 
+msgid "Create Bouquets"
+msgstr ""
+
+msgid "Create a bouquet containing all channels"
+msgstr ""
+
+msgid "Create all channels bouquet:"
+msgstr ""
+
 msgid "Debug mode"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete provider {}"
+msgstr ""
+
+msgid "Delete:"
+msgstr ""
+
+msgid ""
+"EPG Import not found\n"
+"Please install the EPG Import plugin"
+msgstr ""
+
+msgid "EPG Import: Importing {} {} events"
 msgstr ""
 
 msgid "Enable debug mode. Do not enable unless requested"
 msgstr ""
 
+msgid "Enable provider {}"
+msgstr ""
+
+msgid "Enable this option to check and use providers custom service refs"
+msgstr ""
+
 msgid "Enable to update bouquets on a schedule"
+msgstr ""
+
+msgid "Enabled:"
+msgstr ""
+
+msgid "Exit"
 msgstr ""
 
 msgid "IPTV Bouquet Maker - Providers"
@@ -53,10 +115,43 @@ msgstr ""
 msgid "IPTV for Enigma2 - E2m3u2bouquet plugin"
 msgstr ""
 
+msgid "Last channel update: {}"
+msgstr ""
+
+msgid "Log file has been saved to the tmp directory"
+msgstr ""
+
+msgid "Name:"
+msgstr ""
+
 msgid "No providers please add one (use green button) or create config.xml file"
 msgstr ""
 
+msgid "Normally should be left disabled. Setting to enabled may allow recording on some boxes. If you playback issues (e.g. stuttering on channels) set back to disabled"
+msgstr ""
+
+msgid "Override service refs"
+msgstr ""
+
+msgid "Please wait..."
+msgstr ""
+
 msgid "Provider Configure - {}"
+msgstr ""
+
+msgid "Provider name"
+msgstr ""
+
+msgid "Providers"
+msgstr ""
+
+msgid "Reset Bouquets"
+msgstr ""
+
+msgid "Run"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Schedule type"
@@ -68,6 +163,15 @@ msgstr ""
 msgid "Set the number of hours between automatic bouquet updates"
 msgstr ""
 
+msgid "Setup mode:"
+msgstr ""
+
+msgid "Should be left disabled unless you need to use the override.xml to override service refs (e.g. for DVB to IPTV EPG mapping)"
+msgstr ""
+
+msgid "Show Log"
+msgstr ""
+
 msgid "Show in extensions"
 msgstr ""
 
@@ -75,6 +179,21 @@ msgid "Show in extensions menu"
 msgstr ""
 
 msgid "Show in main menu"
+msgstr ""
+
+msgid "Starting..."
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Stream type for TV services"
+msgstr ""
+
+msgid "Stream type for VOD services"
+msgstr ""
+
+msgid "TV Stream Type:"
 msgstr ""
 
 msgid ""
@@ -92,6 +211,18 @@ msgid "Update interval (hours)"
 msgstr ""
 
 msgid ""
+"Update of channels will start.\n"
+"This may take a few minutes.\n"
+"Proceed?"
+msgstr ""
+
+msgid ""
 "Update of channels will start. This may take a few minutes.\n"
 "Proceed?"
+msgstr ""
+
+msgid "Update still in progress. Please wait."
+msgstr ""
+
+msgid "VOD Stream Type:"
 msgstr ""
