@@ -51,7 +51,7 @@ class E2m3u2b_Menu(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
-        self.setTitle_(("IPTV Bouquet Maker"))
+        self.setTitle(_("IPTV Bouquet Maker"))
         self.skinName = ['E2m3u2b_Menu', 'AutoBouquetsMaker_Menu']
 
         self.onChangedEntry = []
