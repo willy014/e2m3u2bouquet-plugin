@@ -218,7 +218,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self.provider_enabled.value = self.provider.enabled
         self.provider_name = ConfigText(default='', fixed_size=False, visible_width=20)
         self.provider_name.value = self.provider.name if self.provider.name != 'New' else ''
-        self.provider_settings_level = ConfigSelection(default='simple', choices=['simple', 'expert'])
+        self.provider_settings_level = ConfigSelection(default='simple', choices=[_('simple'), _('expert')])
         self.provider_settings_level.value = self.provider.settings_level
         self.provider_m3u_url = ConfigText(default='', fixed_size=False, visible_width=20)
         self.provider_m3u_url.value = self.provider.m3u_url
@@ -265,16 +265,16 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
             if self.provider_enabled.value:
                 self.list.append(getConfigListEntry(_('Setup mode:'), self.provider_settings_level, _('Choose level of settings. Expert shows all options')))
                 if not self.provider.provider_hide_urls:
-                    self.list.append(getConfigListEntry('M3U url:', self.provider_m3u_url, 'Providers M3U url. USERNAME & PASSWORD will be replaced by values below'))
-                    self.list.append(getConfigListEntry('EPG url:', self.provider_epg_url, 'Providers EPG url. USERNAME & PASSWORD will be replaced by values below'))
-                self.list.append(getConfigListEntry('Username:', self.provider_username, 'If set will replace USERNAME placeholder in urls'))
-                self.list.append(getConfigListEntry('Password:', self.provider_password, 'If set will replace PASSWORD placeholder in urls'))
-                self.list.append(getConfigListEntry('Multi VOD:', self.provider_multi_vod, 'Enable to create multiple VOD bouquets rather than single VOD bouquet'))
-                self.list.append(getConfigListEntry('Picons:', self.provider_picons, 'Automatically download Picons'))
-                self.list.append(getConfigListEntry("IPTV bouquet position", self.provider_bouquet_pos, 'Select where to place IPTV bouquets '))
+                    self.list.append(getConfigListEntry('M3U url:', self.provider_m3u_url, _('Providers M3U url. USERNAME & PASSWORD will be replaced by values below')))
+                    self.list.append(getConfigListEntry('EPG url:', self.provider_epg_url, _('Providers EPG url. USERNAME & PASSWORD will be replaced by values below')))
+                self.list.append(getConfigListEntry(_('Username:'), self.provider_username, _('If set will replace USERNAME placeholder in urls')))
+                self.list.append(getConfigListEntry(_('Password:'), self.provider_password, _('If set will replace PASSWORD placeholder in urls')))
+                self.list.append(getConfigListEntry('Multi VOD:', self.provider_multi_vod, _('Enable to create multiple VOD bouquets rather than single VOD bouquet')))
+                self.list.append(getConfigListEntry('Picons:', self.provider_picons, _('Automatically download Picons')))
+                self.list.append(getConfigListEntry(_("IPTV bouquet position"), self.provider_bouquet_pos, _('Select where to place IPTV bouquets ')))
                 self.list.append(getConfigListEntry(_('Create all channels bouquet:'), self.provider_all_bouquet, _('Create a bouquet containing all channels')))
                 if self.provider_settings_level.value == 'expert':
-                    self.list.append(getConfigListEntry(_('All IPTV Type:'), self.provider_iptv_types, _('Normally should be left disabled. Setting to enabled may allow recording on some boxes. If you playback issues (e.g. stuttering on channels) set back to disabled')))
+                    self.list.append(getConfigListEntry(_('All IPTV type:'), self.provider_iptv_types, _('Normally should be left disabled. Setting to enabled may allow recording on some boxes. If you playback issues (e.g. stuttering on channels) set back to disabled')))
                     self.list.append(getConfigListEntry(_('TV Stream Type:'), self.provider_streamtype_tv, _('Stream type for TV services')))
                     self.list.append(getConfigListEntry(_('VOD Stream Type:'), self.provider_streamtype_vod, _('Stream type for VOD services')))
                     self.list.append(getConfigListEntry(_("Override service refs"), self.provider_sref_override, _('Should be left disabled unless you need to use the override.xml to override service refs (e.g. for DVB to IPTV EPG mapping)')))
