@@ -192,8 +192,8 @@ class E2m3u2b_Log(Screen):
         Screen.setTitle(self, "IPTV Bouquet Maker - Log")
         self.skinName = ["E2m3u2b_Log", "AutoBouquetsMaker_Log"]
 
-        self["key_red"] = Button("Close")
-        self["key_green"] = Button("Save")
+        self["key_red"] = Button(_("Close"))
+        self["key_green"] = Button(_("Save"))
 #        self["key_blue"] = Button("Clear")
         self["list"] = ScrollLabel(log.getvalue())
         self["actions"] = ActionMap(["DirectionActions", "OkCancelActions", "ColorActions", "MenuActions"],
