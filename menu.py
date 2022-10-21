@@ -51,7 +51,7 @@ class E2m3u2b_Menu(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
-        self.setTitle(_("IPTV Bouquet Maker"))
+        self.setTitle("IPTV Bouquet Maker")
         self.skinName = ['E2m3u2b_Menu', 'AutoBouquetsMaker_Menu']
 
         self.onChangedEntry = []
@@ -168,7 +168,7 @@ class E2m3u2b_Status(Screen):
         self["key_red"] = Button(_("Close"))
 
         if config.plugins.e2m3u2b.last_update:
-            self["about"].setText(_('Last channel update: {}').format(config.plugins.e2m3u2b.last_update.value))
+            self["about"].setText('Last channel update: {}'.format(config.plugins.e2m3u2b.last_update.value))
 
     def keyCancel(self):
         self.close()
@@ -192,8 +192,8 @@ class E2m3u2b_Log(Screen):
         Screen.setTitle(self, "IPTV Bouquet Maker - Log")
         self.skinName = ["E2m3u2b_Log", "AutoBouquetsMaker_Log"]
 
-        self["key_red"] = Button("Close")
-        self["key_green"] = Button("Save")
+        self["key_red"] = Button(_("Close"))
+        self["key_green"] = Button(_("Save"))
 #        self["key_blue"] = Button("Clear")
         self["list"] = ScrollLabel(log.getvalue())
         self["actions"] = ActionMap(["DirectionActions", "OkCancelActions", "ColorActions", "MenuActions"],
@@ -225,7 +225,7 @@ class E2m3u2b_Log(Screen):
         filename = os.path.join(path, 'e2m3u2bouquet.log')
         with open(filename, 'w') as f:
             f.write(log.getvalue())
-        self.session.open(MessageBox, _('Log file has been saved to the tmp directory'), MessageBox.TYPE_INFO, timeout=30)
+        self.session.open(MessageBox, 'Log file has been saved to the tmp directory', MessageBox.TYPE_INFO, timeout=30)
 
 
 class E2m3u2b_Update(Screen):
@@ -316,7 +316,7 @@ class E2m3u2b_Update(Screen):
         self['about'].setText(e2m3u2bouquet.Status.message)
 
         if self.epgimport and self.epgimport.isImportRunning():
-            self['about'].setText(_('EPG Import: Importing {} {} events').format(self.epgimport.source.description,
+            self['about'].setText('EPG Import: Importing {} {} events'.format(self.epgimport.source.description,
                                                                               self.epgimport.eventCount))
 
 
