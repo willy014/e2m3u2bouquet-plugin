@@ -207,7 +207,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
 
     def populate(self):
         self['actions'].setEnabled(False)
-        self['pleasewait'].setText("Please wait...")
+        self['pleasewait'].setText(_("Please wait..."))
         self.activityTimer.start(1)
 
     def prepare(self):
@@ -218,7 +218,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self.provider_enabled.value = self.provider.enabled
         self.provider_name = ConfigText(default='', fixed_size=False, visible_width=20)
         self.provider_name.value = self.provider.name if self.provider.name != 'New' else ''
-        self.provider_settings_level = ConfigSelection(default='simple', choices=[_('simple'), _('expert')])
+        self.provider_settings_level = ConfigSelection(default='simple', choices=[('simple', _('simple')), ('expert', _('expert'))])
         self.provider_settings_level.value = self.provider.settings_level
         self.provider_m3u_url = ConfigText(default='', fixed_size=False, visible_width=20)
         self.provider_m3u_url.value = self.provider.m3u_url
@@ -232,7 +232,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
         self.provider_multi_vod.value = self.provider.multi_vod
         self.provider_picons = ConfigYesNo(default=False)
         self.provider_picons.value = self.provider.picons
-        self.provider_bouquet_pos = ConfigSelection(default='bottom', choices=['bottom', 'top'])
+        self.provider_bouquet_pos = ConfigSelection(default='bottom', choices=[('bottom', _('bottom')), ('top', _('top'))])
         if self.provider.bouquet_top:
             self.provider_bouquet_pos.value = 'top'
         self.provider_all_bouquet = ConfigYesNo(default=False)
@@ -279,7 +279,7 @@ class E2m3u2b_Providers_Config(ConfigListScreen, Screen):
                     self.list.append(getConfigListEntry(_('VOD Stream Type:'), self.provider_streamtype_vod, _('Stream type for VOD services')))
                     self.list.append(getConfigListEntry(_("Override service refs"), self.provider_sref_override, _('Should be left disabled unless you need to use the override.xml to override service refs (e.g. for DVB to IPTV EPG mapping)')))
                     self.list.append(getConfigListEntry(_("Check providers bouquet"), self.provider_bouquet_download, _('Enable this option to check and use providers custom service refs')))
- 
+
         self['config'].list = self.list
         self['config'].setList(self.list)
 

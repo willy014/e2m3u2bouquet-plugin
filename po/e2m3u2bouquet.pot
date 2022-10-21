@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-20 12:31+0200\n"
+"POT-Creation-Date: 2022-10-21 11:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-msgid "All IPTV Type:"
+msgid "All IPTV type:"
 msgstr ""
 
 msgid "Attempt Epg Import"
@@ -33,6 +33,9 @@ msgid "Automatic bouquet update (schedule)"
 msgstr ""
 
 msgid "Automatic bouquet update (when box starts)"
+msgstr ""
+
+msgid "Automatically download Picons"
 msgstr ""
 
 msgid "Automatically run Epg Import after bouquet update"
@@ -97,6 +100,9 @@ msgstr ""
 msgid "Enable this option to check and use providers custom service refs"
 msgstr ""
 
+msgid "Enable to create multiple VOD bouquets rather than single VOD bouquet"
+msgstr ""
+
 msgid "Enable to update bouquets on a schedule"
 msgstr ""
 
@@ -106,13 +112,25 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
+msgid "IPTV Bouquet Maker"
+msgstr ""
+
 msgid "IPTV Bouquet Maker - Providers"
 msgstr ""
 
 msgid "IPTV Bouquet Maker Configure"
 msgstr ""
 
+msgid "IPTV bouquet position"
+msgstr ""
+
 msgid "IPTV for Enigma2 - E2m3u2bouquet plugin"
+msgstr ""
+
+msgid "If set will replace PASSWORD placeholder in urls"
+msgstr ""
+
+msgid "If set will replace USERNAME placeholder in urls"
 msgstr ""
 
 msgid "Last channel update: {}"
@@ -133,6 +151,9 @@ msgstr ""
 msgid "Override service refs"
 msgstr ""
 
+msgid "Password:"
+msgstr ""
+
 msgid "Please wait..."
 msgstr ""
 
@@ -145,6 +166,12 @@ msgstr ""
 msgid "Providers"
 msgstr ""
 
+msgid "Providers EPG url. USERNAME & PASSWORD will be replaced by values below"
+msgstr ""
+
+msgid "Providers M3U url. USERNAME & PASSWORD will be replaced by values below"
+msgstr ""
+
 msgid "Reset Bouquets"
 msgstr ""
 
@@ -155,6 +182,9 @@ msgid "Save"
 msgstr ""
 
 msgid "Schedule type"
+msgstr ""
+
+msgid "Select where to place IPTV bouquets "
 msgstr ""
 
 msgid "Set the day of time to perform the bouquet update"
@@ -224,5 +254,20 @@ msgstr ""
 msgid "Update still in progress. Please wait."
 msgstr ""
 
+msgid "Username:"
+msgstr ""
+
 msgid "VOD Stream Type:"
+msgstr ""
+
+msgid "bottom"
+msgstr ""
+
+msgid "expert"
+msgstr ""
+
+msgid "simple"
+msgstr ""
+
+msgid "top"
 msgstr ""
