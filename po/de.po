@@ -147,7 +147,7 @@ msgid "Last channel update: {}"
 msgstr "Letzte Kanalaktualisierung: {}"
 
 msgid "Log file has been saved to the tmp directory"
-msgstr "Die Logdatei wurde im Verzeichnis tmp gespeichert."
+msgstr "Die Logdatei wurde im Verzeichnis tmp gespeichert"
 
 msgid "Name:"
 msgstr ""
@@ -243,7 +243,7 @@ msgid "Status"
 msgstr ""
 
 msgid "Stream type for TV services"
-msgstr "Streamtyp für TV Dienste"
+msgstr "Streamtyp für TV Kanäle"
 
 msgid "Stream type for VOD services"
 msgstr "Streamtyp für VOD"
