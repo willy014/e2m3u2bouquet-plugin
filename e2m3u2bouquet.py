@@ -564,9 +564,9 @@ class Provider:
         """Add service to bouquet file
         """
         if not channel['stream-name'].startswith('placeholder_'):
-            f.write("#SERVICE {}:{}:\n"
-                    .format(channel['serviceRef'], quote(channel['stream-url'])))
-            f.write("#DESCRIPTION {}\n".format(six.ensure_str(get_service_title(channel))))
+            title = six.ensure_str(get_service_title(channel))
+            f.write("#SERVICE {}:{}:{}\n".format(channel['serviceRef'], quote(channel['stream-url']), title))
+            f.write("#DESCRIPTION {}\n".format(title))
         else:
             f.write('{}\n'.format(PLACEHOLDER_SERVICE))
 
