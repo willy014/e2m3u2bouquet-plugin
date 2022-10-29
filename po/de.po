@@ -264,7 +264,7 @@ msgid "Time to start update"
 msgstr "Zeit um die Aktualisierung zu starten"
 
 msgid "Update bouquets at startup"
-msgstr "Aktualisierung beim Start"
+msgstr "Aktualisierung der Bouquets beim Start"
 
 msgid "Update interval (hours)"
 msgstr "Aktualisierungsintervall (Stunden)"
